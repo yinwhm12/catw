@@ -10,6 +10,7 @@ const (
 	CODE_Method_Not_Allowed    = 405 // 方法不对 (POST,PUT,GET)
 	CODE_Not_Acceptable        = 406 // 不能通过
 	CODE_Internal_Server_Error = 500 // 服务错误
+	CODE_Existed_User_Err	   = 202 // 用户已存在
 
 	CODE_Params_Err = 430 // 参数错误
 )
@@ -25,6 +26,7 @@ func CodeString(code int) string {
 		CODE_Method_Not_Allowed:           "Method_Not_Allowed",
 		CODE_Not_Acceptable:               "Not_Acceptable",
 		CODE_Internal_Server_Error:        "Server_Error",
+		CODE_Existed_User_Err:		   "Existed_User_Error",
 		CODE_Params_Err:                   "Params_Error",
 	}[code]
 	return s

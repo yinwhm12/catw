@@ -11,6 +11,7 @@ import (
 	"yinwhm.com/yin/catw/controllers"
 
 	"github.com/astaxie/beego"
+	//"yinwhm.com/yin/catw/filters"
 )
 
 func init() {
@@ -26,6 +27,12 @@ func init() {
 				&controllers.UserController{},
 			),
 		),
+		beego.NSNamespace("/session",
+			beego.NSInclude(
+				&controllers.SessionController{},
+			)),
 	)
 	beego.AddNamespace(ns)
+
+	//beego.InsertFilter("/v1/*",beego.BeforeRouter,filters.AuthLogin,true)
 }

@@ -41,6 +41,27 @@ func init() {
 			AllowHTTPMethods: []string{"delete"},
 			Params: nil})
 
+	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:SessionController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:SessionController"],
+		beego.ControllerComments{
+			Method: "Post",
+			Router: `/`,
+			AllowHTTPMethods: []string{"post"},
+			Params: nil})
+
+	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:SessionController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:SessionController"],
+		beego.ControllerComments{
+			Method: "Delete",
+			Router: `/:id`,
+			AllowHTTPMethods: []string{"delete"},
+			Params: nil})
+
+	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:SessionController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:SessionController"],
+		beego.ControllerComments{
+			Method: "Register",
+			Router: `/register`,
+			AllowHTTPMethods: []string{"post"},
+			Params: nil})
+
 	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:UserController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:UserController"],
 		beego.ControllerComments{
 			Method: "Post",

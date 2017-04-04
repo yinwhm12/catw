@@ -16,6 +16,7 @@
       <root url="file://$PROJECT_DIR$/../../../goTest" />
       <root url="file://$PROJECT_DIR$/../../../sqlTest" />
       <root url="file://$PROJECT_DIR$/../../../golang.org" />
+      <root url="file://$PROJECT_DIR$/../../../go-github-token" />
     </CLASSES>
     <SOURCES>
       <root url="file://$PROJECT_DIR$/../.." />
@@ -33,6 +34,7 @@
       <root url="file://$PROJECT_DIR$/../../../goTest" />
       <root url="file://$PROJECT_DIR$/../../../sqlTest" />
       <root url="file://$PROJECT_DIR$/../../../golang.org" />
+      <root url="file://$PROJECT_DIR$/../../../go-github-token" />
     </SOURCES>
     <excluded>
       <root url="file://$PROJECT_DIR$" />

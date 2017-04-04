@@ -5,6 +5,7 @@ import (
 	"time"
 	"github.com/kataras/go-errors"
 	"yinwhm.com/yin/catw/utils"
+	"fmt"
 )
 
 type User struct {
@@ -13,9 +14,12 @@ type User struct {
 	Pwd string `json:"pwd,omitempty" orm:"column(pwd);null"`
 	CreatedTime int `json:"created_time,omitempty" orm:"column(created_time);null"`
 	UpdatedTime int `json:"updated_time,omitempty" orm:"column(updated_time);null"`
+	Email string `json:"email,omitempty" orm:"column(email);null"`
+	AccessToken string `json:"access_token,omitempty" orm:"column(access_token);size(255);null" json:"-"`
+	RefreshToken string `json:"refresh_token,omitempty" orm:"column(refresh_token);size(255);null" json:"-"`
 }
 
-func (u *User)TablName() string  {
+func (u *User)TableName() string  {
 	return "user"
 }
 
@@ -52,6 +56,57 @@ func UpdateUserById(u *User) (err error)  {
 	if num == 0{
 		err = errors.New("not found")
 	}
+	return
+
+}
+
+func GetUserInfoByEmail(email string) (u *User, err error){
+	o := orm.NewOrm()
+	u = &User{Email:email}
+	if err = o.Read(u, "Email"); err ==nil{
+		return u, nil
+	}
+	return nil, err
+}
+
+func UpdateUserToken(u *User)(err error)  {
+	o := orm.NewOrm()
+	f := utils.GetNotEmptyFields(u, "AccessToken","RefreshToken")
+	num, err := o.Update(u,f...)
+	if err != nil{
+		return
+	}
+	if num == 0{
+		err = errors.New("not found")
+	}
+	return
+}
+
+func GetUserInfoByToken(token string)(u *User, err error)  {
+	o := orm.NewOrm()
+	u = &User{AccessToken:token}
+	if err = o.Read(u, "AccessToken"); err == nil{
+		return  u, err
+	}
+	return nil, err
+
+}
+
+//检验该邮箱是否已注册过
+func CheckEmailForRegister(email string)(noRow bool)  {
+	o := orm.NewOrm()
+	u := &User{Email:email}
+	err := o.Read(u, "Email")
+	if err == orm.ErrNoRows{
+		noRow = true
+		fmt.Println("no rows")
+		return
+	}else if err == orm.ErrMissPK{
+		fmt.Println("no keys")
+	}else {
+		fmt.Println("ok -----")
+	}
+	noRow = false
 	return
 
 }
