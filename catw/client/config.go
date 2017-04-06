@@ -11,4 +11,9 @@ const (
 	routerResetAccessToken string = routerUser + "/reset_access_token"
 	routerCheckSession string = routerUser + "/check_session"
 	routerOffLine string = routerUser + "/off_line"
+
+	token_key = "yinwhm12"
+	OK = 1
+	TimeOver = 111
+	Fail = -1
 )

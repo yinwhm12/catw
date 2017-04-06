@@ -8,6 +8,7 @@ import (
 	"yinwhm.com/yin/catw/models"
 	"fmt"
 	"github.com/kataras/go-errors"
+	"yinwhm.com/yin/catw/client"
 )
 
 //会话 登录 用户简单信息记录 入口
@@ -34,6 +35,25 @@ func (c *SessionController)Post()  {
 		c.RespJSON(http.StatusBadRequest, err.Error())
 		return
 	}
+
+	user, err := models.GetUserInfoByEmail(v.Email); if err != nil{
+		c.RespJSON(http.StatusBadRequest,"用户不存在")
+		return
+	}
+	//利用email pwd 生成一个token_login 在检验是否 过时或者 错误(假密码)
+	//下面生成 token_login
+
+
+	//验证token
+	flag, err := client.CheckToken(user.AccessToken); if err != nil{
+		if flag == client.Fail{//token can not handle
+			c.RespJSON(http.StatusForbidden, err.Error())
+			return
+		}else if flag == client.TimeOver{//token超时 重新设置
+			token, err := client.SetToken()
+		}
+	}
+
 	userAuth, err := tool.CreateSession(v); if err != nil{
 		c.RespJSON(http.StatusForbidden, err.Error())
 		return
@@ -79,7 +99,7 @@ func (c *SessionController)Delete()  {
 // @Success 200 {string} "OK"
 // @router /register [post]
 func (c *SessionController)Register()  {
-	var u models.User
+	var u bean.CreateSession
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &u); err != nil{
 		c.RespJSON(bean.CODE_Params_Err,err.Error())
 		return
@@ -88,35 +108,28 @@ func (c *SessionController)Register()  {
 		c.RespJSON(bean.CODE_Existed_User_Err,errors.New("had the same email"))
 		return
 	}
-	//resemail, err := tool.Register(u.Email,u.Pwd)
-	//if err != nil{
-	//	c.RespJSON(bean.CODE_Bad_Request,err.Error())
-	//	return
-	//}
-	var v bean.CreateSession
-	v.Email = u.Email
-	v.Password = u.Pwd
 
-	userAuth, err := tool.CreateSession(v); if err != nil{
-		c.RespJSON(http.StatusForbidden, err.Error())
+	//注册token
+	 token, err := client.SetToken(u.Email,u.Pwd); if err != nil {
+		c.RespJSON(bean.CODE_Not_Acceptable,"can't not create token")
 		return
 	}
-	u.AccessToken = userAuth.AccessToken
-	u.RefreshToken = userAuth.RefreshToken
 
-
-	fmt.Println("---",u.Email,"---",u.AccessToken,"---",u.RefreshToken)
-	if _,err := models.AddUser(&u); err != nil{
+	fmt.Println("----len:",len(token))
+	var user models.User
+	user.Email = u.Email
+	user.AccessToken = token
+	//注册用户
+	if _,err := models.AddUser(&user); err != nil{
 		c.RespJSON(bean.CODE_Params_Err,err.Error())
 		return
 	}
-	//注册成功后 进行会话建立 直接登录 不需再次进入登录框登录
-	//var uSession bean.CreateSession
-	//uSession.Email = u.Email
-	//uSession.Password = u.Pwd
-	c.RespJSON(http.StatusOK,bean.OutPutSession{Uid:u.Id,Token:u.AccessToken})
 
-	//u.Pwd = ""
-	//c.RespJSONData(u)
+	fmt.Println("id----",user.Id)
+	//expireCookie := time.Now().Add(time.Minute * 5)
+	//
+	//cookie := http.Cookie{Name:"Auth",Value:token,Expires:expireCookie,HttpOnly:true}
+	//http.SetCookie(c.Ctx.ResponseWriter,&cookie)
+	c.RespJSON(http.StatusOK,bean.OutPutSession{Uid:user.Id,Token:user.AccessToken,Email:user.Email})
 
 }
