@@ -103,3 +103,7 @@ func RegisterUser(email, pwd string)(resemail string, err error)  {
 	}
 
 }
+
+//注册
+
+

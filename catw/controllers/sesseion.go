@@ -8,6 +8,8 @@ import (
 	"yinwhm.com/yin/catw/models"
 	"fmt"
 	"github.com/kataras/go-errors"
+	"yinwhm.com/yin/catw/client"
+	"time"
 )
 
 //会话 登录 用户简单信息记录 入口
@@ -88,33 +90,52 @@ func (c *SessionController)Register()  {
 		c.RespJSON(bean.CODE_Existed_User_Err,errors.New("had the same email"))
 		return
 	}
-	//resemail, err := tool.Register(u.Email,u.Pwd)
-	//if err != nil{
-	//	c.RespJSON(bean.CODE_Bad_Request,err.Error())
-	//	return
-	//}
-	var v bean.CreateSession
-	v.Email = u.Email
-	v.Password = u.Pwd
 
-	userAuth, err := tool.CreateSession(v); if err != nil{
-		c.RespJSON(http.StatusForbidden, err.Error())
+	//注册token
+	 token, err := client.SetToken(u.Email); if err != nil {
+		c.RespJSON(bean.CODE_Not_Acceptable,"can't not create token")
 		return
 	}
-	u.AccessToken = userAuth.AccessToken
-	u.RefreshToken = userAuth.RefreshToken
 
+	u.AccessToken = token
 
-	fmt.Println("---",u.Email,"---",u.AccessToken,"---",u.RefreshToken)
+	//注册用户
 	if _,err := models.AddUser(&u); err != nil{
 		c.RespJSON(bean.CODE_Params_Err,err.Error())
 		return
 	}
+
+	fmt.Println("id----",u.Id)
+	expireCookie := time.Now().Add(time.Minute * 5)
+
+
+	cookie := http.Cookie{Name:"Auth",Value:token,Expires:expireCookie,HttpOnly:true}
+	http.SetCookie(c.Ctx.ResponseWriter,&cookie)
+
+
+	//
+	//var v bean.CreateSession
+	//v.Email = u.Email
+	//v.Password = u.Pwd
+	//
+	//userAuth, err := tool.CreateSession(v); if err != nil{
+	//	c.RespJSON(http.StatusForbidden, err.Error())
+	//	return
+	//}
+	//u.AccessToken = userAuth.AccessToken
+	//u.RefreshToken = userAuth.RefreshToken
+	//
+	//
+	//fmt.Println("---",u.Email,"---",u.AccessToken,"---",u.RefreshToken)
+	//if _,err := models.AddUser(&u); err != nil{
+	//	c.RespJSON(bean.CODE_Params_Err,err.Error())
+	//	return
+	//}
 	//注册成功后 进行会话建立 直接登录 不需再次进入登录框登录
 	//var uSession bean.CreateSession
 	//uSession.Email = u.Email
 	//uSession.Password = u.Pwd
-	c.RespJSON(http.StatusOK,bean.OutPutSession{Uid:u.Id,Token:u.AccessToken})
+	c.RespJSON(http.StatusOK,bean.OutPutSession{Uid:u.Id,Token:u.AccessToken,Email:u.Email})
 
 	//u.Pwd = ""
 	//c.RespJSONData(u)

@@ -8,4 +8,6 @@ type CreateSession struct {
 type OutPutSession struct {
 	Uid int `json:"uid"`
 	Token string `json:"token"`
+	Email string `json:"email"`
+
 }

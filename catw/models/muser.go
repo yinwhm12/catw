@@ -9,9 +9,9 @@ import (
 )
 
 type User struct {
-	Id int `json:"id,omitempty" orm:"column(id);atuo"`
+	Id int `json:"id,omitempty" orm:"column(id);auto"`
 	Name string `json:"name,omitempty" orm:"column(name);null"`
-	Pwd string `json:"pwd,omitempty" orm:"column(pwd);null"`
+	//Pwd string `json:"pwd,omitempty" orm:"column(pwd);null"`
 	CreatedTime int `json:"created_time,omitempty" orm:"column(created_time);null"`
 	UpdatedTime int `json:"updated_time,omitempty" orm:"column(updated_time);null"`
 	Email string `json:"email,omitempty" orm:"column(email);null"`
@@ -102,6 +102,7 @@ func CheckEmailForRegister(email string)(noRow bool)  {
 		fmt.Println("no rows")
 		return
 	}else if err == orm.ErrMissPK{
+		noRow = true
 		fmt.Println("no keys")
 	}else {
 		fmt.Println("ok -----")
