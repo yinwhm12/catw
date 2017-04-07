@@ -2,7 +2,7 @@ package bean
 
 type CreateSession struct {
 	Email string `json:"email"`
-	Password string `json:"password"`
+	Pwd string `json:"pwd"`
 }
 
 type OutPutSession struct {

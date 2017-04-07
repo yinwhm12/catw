@@ -9,7 +9,7 @@ import (
 )
 
 func CreateSession(u bean.CreateSession)(userAuth *client.UserAuth, err error)  {
-	userAuth, err = client.Login(u.Email,u.Password)
+	userAuth, err = client.Login(u.Email,u.Pwd)
 	if err != nil {
 		return
 	}

@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"github.com/kataras/go-errors"
 	"yinwhm.com/yin/catw/client"
-	"time"
 )
 
 //会话 登录 用户简单信息记录 入口
@@ -36,21 +35,63 @@ func (c *SessionController)Post()  {
 		c.RespJSON(http.StatusBadRequest, err.Error())
 		return
 	}
-	userAuth, err := tool.CreateSession(v); if err != nil{
-		c.RespJSON(http.StatusForbidden, err.Error())
+
+	if _, err := models.GetUserInfoByEmail(v.Email); err != nil{
+		c.RespJSON(http.StatusBadRequest,"用户不存在")
 		return
 	}
-	u, err := models.GetUserInfoByEmail(userAuth.Email); if err != nil{
+
+	user, err := models.Login(v.Email,v.Pwd); if err != nil {
+		c.RespJSON(bean.CODE_Params_Err,err.Error())
+		return
+	}
+
+	//重新生成token
+	token, err := client.SetToken(user.Email); if err != nil{
+		c.RespJSON(bean.CODE_Bad_Request,err.Error())
+		return
+	}
+
+	user.AccessToken = token
+	//更新数据库的token
+	err = models.UpdateUserToken(user); if err != nil{
+		c.RespJSON(bean.CODE_Params_Err,err.Error())
+		return
+	}
+
+
+
+
+	//验证token
+	//flag, err := client.CheckToken(user.AccessToken); if err != nil{
+	//	if flag == client.Fail{//token can not handle
+	//		c.RespJSON(http.StatusForbidden, err.Error())
+	//		return
+	//	}else if flag == client.TimeOver{//token超时 重新设置
+	//		token, err := client.SetToken(v.Email,v.Pwd); if err != nil{
+	//			c.RespJSON(http.StatusBadRequest,err.Error())
+	//			return
+	//		}
+	//		user.AccessToken = token
+	//	}
+	//}
+
+	toekn, err := client.SetToken(v.Email); if err != nil{
 		c.RespJSON(http.StatusBadRequest,err.Error())
 		return
 	}
-	u.AccessToken = userAuth.AccessToken
-	u.RefreshToken = userAuth.RefreshToken
-	err = models.UpdateUserToken(u); if err != nil{
-		c.RespJSON(http.StatusBadRequest,err.Error())
+	user.Email = v.Email
+	user.Pwd = v.Pwd
+	user.AccessToken = toekn
+	if _,err := models.AddUser(user); err != nil {
+		c.RespJSON(bean.CODE_Params_Err,err.Error())
 		return
 	}
-	c.RespJSON(http.StatusOK,bean.OutPutSession{Uid:u.Id,Token:u.AccessToken})
+	user.Pwd = ""
+	v.Pwd = ""
+
+	//c.RespJSON(http.StatusOK,bean.OutPutSession{Uid:u.Id,Token:u.AccessToken})
+	c.RespJSONData(user)
 }
 
 //Delete ...
@@ -81,7 +122,7 @@ func (c *SessionController)Delete()  {
 // @Success 200 {string} "OK"
 // @router /register [post]
 func (c *SessionController)Register()  {
-	var u models.User
+	var u bean.CreateSession
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &u); err != nil{
 		c.RespJSON(bean.CODE_Params_Err,err.Error())
 		return
@@ -97,47 +138,22 @@ func (c *SessionController)Register()  {
 		return
 	}
 
-	u.AccessToken = token
-
+	fmt.Println("----len:",len(token))
+	var user models.User
+	user.Email = u.Email
+	user.Pwd = u.Pwd
+	user.AccessToken = token
 	//注册用户
-	if _,err := models.AddUser(&u); err != nil{
+	if _,err := models.AddUser(&user); err != nil{
 		c.RespJSON(bean.CODE_Params_Err,err.Error())
 		return
 	}
 
-	fmt.Println("id----",u.Id)
-	expireCookie := time.Now().Add(time.Minute * 5)
-
-
-	cookie := http.Cookie{Name:"Auth",Value:token,Expires:expireCookie,HttpOnly:true}
-	http.SetCookie(c.Ctx.ResponseWriter,&cookie)
-
-
+	fmt.Println("id----",user.Id)
+	//expireCookie := time.Now().Add(time.Minute * 5)
 	//
-	//var v bean.CreateSession
-	//v.Email = u.Email
-	//v.Password = u.Pwd
-	//
-	//userAuth, err := tool.CreateSession(v); if err != nil{
-	//	c.RespJSON(http.StatusForbidden, err.Error())
-	//	return
-	//}
-	//u.AccessToken = userAuth.AccessToken
-	//u.RefreshToken = userAuth.RefreshToken
-	//
-	//
-	//fmt.Println("---",u.Email,"---",u.AccessToken,"---",u.RefreshToken)
-	//if _,err := models.AddUser(&u); err != nil{
-	//	c.RespJSON(bean.CODE_Params_Err,err.Error())
-	//	return
-	//}
-	//注册成功后 进行会话建立 直接登录 不需再次进入登录框登录
-	//var uSession bean.CreateSession
-	//uSession.Email = u.Email
-	//uSession.Password = u.Pwd
-	c.RespJSON(http.StatusOK,bean.OutPutSession{Uid:u.Id,Token:u.AccessToken,Email:u.Email})
-
-	//u.Pwd = ""
-	//c.RespJSONData(u)
+	//cookie := http.Cookie{Name:"Auth",Value:token,Expires:expireCookie,HttpOnly:true}
+	//http.SetCookie(c.Ctx.ResponseWriter,&cookie)
+	c.RespJSON(http.StatusOK,bean.OutPutSession{Uid:user.Id,Token:user.AccessToken,Email:user.Email})
 
 }
