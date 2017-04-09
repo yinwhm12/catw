@@ -8,7 +8,7 @@ import (
 )
 
 type User struct {
-	Id int `json:"id,omitempty" orm:"column(id);auto"`
+	Id int `json:"id,omitempty" orm:"pk;column(id);auto"`
 	Name string `json:"name,omitempty" orm:"column(name);null"`
 	Pwd string `json:"pwd,omitempty" orm:"column(pwd);null"`
 	CreatedTime int `json:"created_time,omitempty" orm:"column(created_time);null"`
@@ -16,6 +16,8 @@ type User struct {
 	Email string `json:"email,omitempty" orm:"column(email);null"`
 	AccessToken string `json:"access_token,omitempty" orm:"column(access_token);size(255);null" json:"-"`
 	RefreshToken string `json:"refresh_token,omitempty" orm:"column(refresh_token);size(255);null" json:"-"`
+
+	Article []*Article `orm:"reverse(many)"`
 }
 
 func (u *User)TableName() string  {
@@ -42,6 +44,15 @@ func GetUserInfoByName(name string) (u *User,err error)  {
 	}
 	return nil, err
 
+}
+//
+func GetUserById(id int)(u *User,err error)  {
+	o := orm.NewOrm()
+	u = &User{Id: id}
+	if err = o.Read(u); err == nil{
+		return u, nil
+	}
+	return nil, err
 }
 
 func UpdateUserById(u *User) (err error)  {

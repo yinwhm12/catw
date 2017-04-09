@@ -23,7 +23,7 @@ func SetToken(email string) (tokenStr string, err error) {
 		email,
 		jwt.StandardClaims{
 			ExpiresAt:expireToken,
-			Issuer:"yinwhm12@163.com",
+			Issuer:"yin",
 		},
 	}
 

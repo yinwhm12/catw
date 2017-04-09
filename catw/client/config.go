@@ -13,7 +13,7 @@ const (
 	routerOffLine string = routerUser + "/off_line"
 
 	token_key = "yinwhm12"
-	OK = 1
-	TimeOver = 111
-	Fail = -1
+	OK = 1   //token验证无误
+	TimeOver = 111  //token 验证超时
+	Fail = -1	//token 有误
 )

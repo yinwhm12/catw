@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"yinwhm.com/yin/catw/tool"
 	"yinwhm.com/yin/catw/models"
-	"fmt"
 	"github.com/kataras/go-errors"
 	"yinwhm.com/yin/catw/client"
 )
@@ -16,7 +15,7 @@ type SessionController struct {
 	BaseController
 }
 
-func (c *SessionController)URLMaping()  {
+func (c *SessionController)URLMapping()  {
 	c.Mapping("Post",c.Post)
 	c.Mapping("Put",c.Put)
 	c.Mapping("Delete",c.Delete)
@@ -59,34 +58,10 @@ func (c *SessionController)Post()  {
 		return
 	}
 
-
-
-
-	//验证token
-	//flag, err := client.CheckToken(user.AccessToken); if err != nil{
-	//	if flag == client.Fail{//token can not handle
-	//		c.RespJSON(http.StatusForbidden, err.Error())
-	//		return
-	//	}else if flag == client.TimeOver{//token超时 重新设置
-	//		token, err := client.SetToken(v.Email,v.Pwd); if err != nil{
-	//			c.RespJSON(http.StatusBadRequest,err.Error())
-	//			return
-	//		}
-	//		user.AccessToken = token
-	//	}
-	//}
-
-	toekn, err := client.SetToken(v.Email); if err != nil{
-		c.RespJSON(http.StatusBadRequest,err.Error())
-		return
-	}
 	user.Email = v.Email
 	user.Pwd = v.Pwd
-	user.AccessToken = toekn
-	if _,err := models.AddUser(user); err != nil {
-		c.RespJSON(bean.CODE_Params_Err,err.Error())
-		return
-	}
+	user.AccessToken = token
+
 	user.Pwd = ""
 	v.Pwd = ""
 
@@ -138,7 +113,6 @@ func (c *SessionController)Register()  {
 		return
 	}
 
-	fmt.Println("----len:",len(token))
 	var user models.User
 	user.Email = u.Email
 	user.Pwd = u.Pwd
@@ -149,7 +123,6 @@ func (c *SessionController)Register()  {
 		return
 	}
 
-	fmt.Println("id----",user.Id)
 	//expireCookie := time.Now().Add(time.Minute * 5)
 	//
 	//cookie := http.Cookie{Name:"Auth",Value:token,Expires:expireCookie,HttpOnly:true}
