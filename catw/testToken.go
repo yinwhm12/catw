@@ -1,23 +1,16 @@
 package main
 
-import (
-	"fmt"
-	"yinwhm.com/yin/catw/models"
-	"github.com/astaxie/beego/orm"
-	_"github.com/go-sql-driver/mysql"
-	"github.com/astaxie/beego"
-)
 
-func init()  {
-	link := fmt.Sprintf("%s:%s@(%s:%s)/%s", beego.AppConfig.String("mysqluser"),
-		beego.AppConfig.String("mysqlpass"), beego.AppConfig.String("mysqlurls"),
-		beego.AppConfig.String("mysqlport"), beego.AppConfig.String("mysqldb"))
-	orm.RegisterDataBase("default", "mysql", link)
-
-	orm.Debug = beego.BConfig.RunMode == "dev"
-}
-
-func main()  {
+//func init()  {
+//	link := fmt.Sprintf("%s:%s@(%s:%s)/%s", beego.AppConfig.String("mysqluser"),
+//		beego.AppConfig.String("mysqlpass"), beego.AppConfig.String("mysqlurls"),
+//		beego.AppConfig.String("mysqlport"), beego.AppConfig.String("mysqldb"))
+//	orm.RegisterDataBase("default", "mysql", link)
+//
+//	orm.Debug = beego.BConfig.RunMode == "dev"
+//}
+//
+//func main()  {
 
 	//articles, err := models.GetArticleByUser(3)
 	//if err !=nil{
@@ -63,16 +56,16 @@ func main()  {
 	//	return
 	//}
 
-	root, err := models.GetAllRoot1TypeInfo(); if err != nil{
-		fmt.Println("errr---")
-		return
-	}
-	for id,v := range root{
-		fmt.Println("id=",id,"name:",v.Root1TypeName)
-	}
-
-	fmt.Println("ok")
-}
+//	root, err := models.GetAllRoot1TypeInfo(); if err != nil{
+//		fmt.Println("errr---")
+//		return
+//	}
+//	for id,v := range root{
+//		fmt.Println("id=",id,"name:",v.Root1TypeName)
+//	}
+//
+//	fmt.Println("ok")
+//}
 
 //func main()  {
 //

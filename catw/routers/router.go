@@ -31,6 +31,19 @@ func init() {
 			beego.NSInclude(
 				&controllers.SessionController{},
 			)),
+		beego.NSNamespace("/root_1_type",
+			beego.NSInclude(
+				&controllers.Root1TypeController{},
+			)),
+		beego.NSNamespace("/root_2_type",
+			beego.NSInclude(&controllers.Root2TypeController{},
+			)),
+		beego.NSNamespace("/level_type",
+			beego.NSInclude(&controllers.LevelTypeController{},
+			)),
+
+
+
 	)
 	beego.AddNamespace(ns)
 
