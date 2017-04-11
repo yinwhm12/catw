@@ -13,6 +13,20 @@ func init() {
 			AllowHTTPMethods: []string{"post"},
 			Params: nil})
 
+	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:ArticleController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:ArticleController"],
+		beego.ControllerComments{
+			Method: "GetOne",
+			Router: `/:id`,
+			AllowHTTPMethods: []string{"get"},
+			Params: nil})
+
+	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:ArticleController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:ArticleController"],
+		beego.ControllerComments{
+			Method: "GetType",
+			Router: `/type`,
+			AllowHTTPMethods: []string{"get"},
+			Params: nil})
+
 	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:LevelTypeController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:LevelTypeController"],
 		beego.ControllerComments{
 			Method: "Get",

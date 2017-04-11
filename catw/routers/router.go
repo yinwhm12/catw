@@ -41,6 +41,9 @@ func init() {
 		beego.NSNamespace("/level_type",
 			beego.NSInclude(&controllers.LevelTypeController{},
 			)),
+		beego.NSNamespace("/article",
+			beego.NSInclude(&controllers.ArticleController{},
+			)),
 
 
 

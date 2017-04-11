@@ -4,6 +4,7 @@ import (
 	"yinwhm.com/yin/catw/models"
 	"encoding/json"
 	"yinwhm.com/yin/catw/models/bean"
+	"strconv"
 )
 
 type ArticleController struct {
@@ -35,3 +36,61 @@ func (c *ArticleController)Post()  {
 		}
 	}
 }
+
+// Get ...
+// @Title 具体文章 帖子
+// @Success 200
+// @Failure 403
+// @router /:id [get]
+func (c *ArticleController)GetOne()  {
+	idStr := c.Ctx.Input.Param(":id")
+	id, _ := strconv.Atoi(idStr)
+	article, err := models.GetArticleById(id)
+	if err != nil{
+		c.RespJSON(bean.CODE_Forbidden,err.Error())
+	}else{
+		c.RespJSONData(article)
+	}
+}
+
+// Get All
+// @Title 取某个类型(root1 root2 levelType)的全部内容
+// @Params  type 类型
+// @router /type [get]
+func (c *ArticleController)GetType()  {
+	idStr := c.Ctx.Input.Param(":id")
+	type_id, _ := strconv.Atoi(idStr)
+
+	typeStr := c.GetString("type")
+	var articles []models.Article
+	//articles := []models.Article{}
+	var err error
+	if typeStr == "root1"{
+		articles, err = models.GetAticlesByRoot1Id(type_id)
+		if err != nil{
+			c.RespJSON(bean.CODE_Forbidden,err.Error())
+			return
+		}
+
+	}else if typeStr == "root2"{
+		articles, err = models.GetAticlesByRoot2Id(type_id)
+		if err != nil{
+			c.RespJSON(bean.CODE_Forbidden,err.Error())
+			return
+		}
+	}else if typeStr == "level"{
+		articles, err = models.GetAticlesByLevelTypeId(type_id)
+		if err != nil{
+			c.RespJSON(bean.CODE_Forbidden, err.Error())
+			return
+		}
+	}else {
+		c.RespJSON(bean.CODE_Forbidden,"bad wrong")
+		return
+	}
+	c.RespJSONData(articles)
+}
+
+
+
+
