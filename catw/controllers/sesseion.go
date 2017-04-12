@@ -65,7 +65,7 @@ func (c *SessionController)Post()  {
 	user.Pwd = ""
 	v.Pwd = ""
 
-	//c.RespJSON(http.StatusOK,bean.OutPutSession{Uid:u.Id,Token:u.AccessToken})
+	c.RespJSON(http.StatusOK,bean.OutPutSession{Uid:user.Id,Token:user.AccessToken,Email:user.Email,Name:user.Name})
 	c.RespJSONData(user)
 }
 

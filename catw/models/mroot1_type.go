@@ -36,3 +36,12 @@ func GetAllRoot1TypeInfo()(r []Root1Type,err error)  {
 	}
 	return nil, err
 }
+
+func GetRoot1TypeInfoByName(name string)(r *Root1Type,err error)  {
+	o := orm.NewOrm()
+	r = &Root1Type{Root1TypeName:name}
+	if err = o.Read(r); err == nil{
+		return r, nil
+	}
+	return nil,err
+}

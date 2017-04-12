@@ -9,5 +9,5 @@ type OutPutSession struct {
 	Uid int `json:"uid"`
 	Token string `json:"token"`
 	Email string `json:"email"`
-
+	Name string `json:"name"`
 }

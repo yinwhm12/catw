@@ -2,9 +2,11 @@ package controllers
 
 import (
 	"yinwhm.com/yin/catw/models"
-	"encoding/json"
 	"yinwhm.com/yin/catw/models/bean"
 	"strconv"
+	"fmt"
+	"yinwhm.com/yin/catw/client"
+	"encoding/json"
 )
 
 type ArticleController struct {
@@ -23,18 +25,46 @@ func (c *ArticleController)URLMapping()  {
 // @Failure 403
 // @router / [post]
 func (c *ArticleController)Post()  {
-	var article models.Article
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody,&article); err != nil{
+
+	fmt.Println("-------")
+	var articleJSON client.ArticleJSON
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody,&articleJSON); err != nil{
 		c.RespJSON(bean.CODE_Forbidden,err.Error())
 		return
-	}else{//参数 有效
-
-		if _,err := models.AddArticle(&article); err == nil{
-			c.RespJSONData("OK")
-		}else {
-			c.RespJSON(bean.CODE_Forbidden,err.Error())
+	}else {
+		user, err := models.GetUserById(c.Uid())
+		if err != nil{
+			c.RespJSON(bean.CODE_Forbidden,"用户数据有误，请重登录!")
+			return
 		}
+		endType,err :=models.GetEndTypeInfoByAllFK(articleJSON.ArticleRoot1,articleJSON.ArticleRoot2,articleJSON.ArticleLevel)
+		if err != nil{
+			c.RespJSON(bean.CODE_Forbidden,err.Error())
+			return
+		}
+		var article  models.Article
+		article.EndType = endType
+		article.User = user
+		if _,err = models.AddArticle(&article);err != nil{
+			c.RespJSON(bean.CODE_Forbidden,err.Error())
+			return
+		}
+
+
 	}
+	c.RespJSON(bean.CODE_Success,"OK")
+	//var article models.Article
+	//if err := json.Unmarshal(c.Ctx.Input.RequestBody,&article); err != nil{
+	//	c.RespJSON(bean.CODE_Forbidden,err.Error())
+	//	return
+	//}else{//参数 有效
+	//
+	//	if _,err := models.AddArticle(&article); err == nil{
+	//		c.RespJSONData("OK")
+	//	}else {
+	//		c.RespJSON(bean.CODE_Forbidden,err.Error())
+	//	}
+	//}
 }
 
 // Get ...

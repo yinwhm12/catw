@@ -34,3 +34,13 @@ func GetAllLevelTypeInfo()(l []LevelType,err error)  {
 	}
 	return nil, err
 }
+
+func GetLevelTypeInfoByName(name string)(l *LevelType,err error)  {
+	o := orm.NewOrm()
+	l = &LevelType{LevelTypeName:name}
+	if err = o.Read(l); err == nil{
+		return l, nil
+	}
+	return nil,err
+
+}

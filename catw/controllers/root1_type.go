@@ -33,3 +33,4 @@ func (c *Root1TypeController)Get()  {
 
 
 }
+

@@ -28,3 +28,13 @@ func (c *Root2TypeController)Get()  {
 	}
 	c.RespJSONData(type2s)
 }
+
+//// @Get ...
+//// @Title 获取类型
+//// @Description 通过name 获取信息
+//// @Success 200
+//// @Failure 403
+//// @router /type/ [get]
+//func (c *Root2TypeController)GetOne()  {
+//	type2s
+//}
