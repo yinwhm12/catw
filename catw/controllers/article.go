@@ -32,19 +32,24 @@ func (c *ArticleController)Post()  {
 		c.RespJSON(bean.CODE_Forbidden,err.Error())
 		return
 	}else {
-		user, err := models.GetUserById(c.Uid())
+		fmt.Println("articleJSON----",articleJSON)
+		user, err := models.GetUserById(3)
 		if err != nil{
 			c.RespJSON(bean.CODE_Forbidden,"用户数据有误，请重登录!")
 			return
 		}
+		fmt.Println("user--",user)
 		endType,err :=models.GetEndTypeInfoByAllFK(articleJSON.ArticleRoot1,articleJSON.ArticleRoot2,articleJSON.ArticleLevel)
 		if err != nil{
 			c.RespJSON(bean.CODE_Forbidden,err.Error())
 			return
 		}
+		fmt.Println("eeee--",endType)
 		var article  models.Article
 		article.EndType = endType
 		article.User = user
+		article.TextContent = articleJSON.ArticleContent
+		article.Title = articleJSON.ArticleTitle
 		if _,err = models.AddArticle(&article);err != nil{
 			c.RespJSON(bean.CODE_Forbidden,err.Error())
 			return

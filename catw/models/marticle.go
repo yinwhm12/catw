@@ -42,7 +42,7 @@ func GetArticleById(id int) (a *Article,err error)  {
 	return nil, err
 }
 
-func GetArticlesByUser(id int)(articles []*Article,err error)  {
+func GetArticlesByUser(id int)(articles *[]Article,err error)  {
 	if _,err =orm.NewOrm().QueryTable("article").
 		Filter("User",id).RelatedSel().All(&articles); err != nil{
 		return nil,err
@@ -50,7 +50,7 @@ func GetArticlesByUser(id int)(articles []*Article,err error)  {
 	return articles,nil
 }
 
-func GetArticlesByEndType(id int)(articles []*Article,err error)  {
+func GetArticlesByEndType(id int)(articles *[]Article,err error)  {
 	if _,err = orm.NewOrm().QueryTable("article").
 		Filter("EndType",id).RelatedSel().All(&articles); err != nil{
 		return nil,err

@@ -62,6 +62,7 @@ func GetEndTypeInfoById(id int)(endType *EndType,err error)  {
 }
 
 func GetEndTypeInfoByAllFK(root1,root2,level int)(endType *EndType,err error)  {
+	fmt.Println("in endtype")
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(EndType))
 	err = qs.Filter("root1_type_id",root1).Filter("root2_type_id",root2).
