@@ -15,7 +15,7 @@ type Article struct {
 
 	User *User `json:"user" orm:"rel(fk)"`
 	EndType *EndType `json:"end_type" orm:"rel(fk)"`
-	ValueArticle *ValueArticle `json:"value_article" orm:"rel(one)"`
+	ValueArticle *ValueArticle `json:"value_article" orm:"reverse(one)" json:"-"`
 }
 
 func (a *Article)TableName() string {

@@ -26,34 +26,34 @@ func (c *ArticleController)URLMapping()  {
 // @router / [post]
 func (c *ArticleController)Post()  {
 
-	fmt.Println("-------")
+	fmt.Println("uuuuu",c.Uid())
 	var articleJSON client.ArticleJSON
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody,&articleJSON); err != nil{
 		c.RespJSON(bean.CODE_Forbidden,err.Error())
 		return
 	}else {
 		fmt.Println("articleJSON----",articleJSON)
-		user, err := models.GetUserById(3)
+		user, err := models.GetUserById(c.Uid())
 		if err != nil{
 			c.RespJSON(bean.CODE_Forbidden,"用户数据有误，请重登录!")
 			return
 		}
 		fmt.Println("user--",user)
-		endType,err :=models.GetEndTypeInfoByAllFK(articleJSON.ArticleRoot1,articleJSON.ArticleRoot2,articleJSON.ArticleLevel)
-		if err != nil{
-			c.RespJSON(bean.CODE_Forbidden,err.Error())
-			return
-		}
-		fmt.Println("eeee--",endType)
-		var article  models.Article
-		article.EndType = endType
-		article.User = user
-		article.TextContent = articleJSON.ArticleContent
-		article.Title = articleJSON.ArticleTitle
-		if _,err = models.AddArticle(&article);err != nil{
-			c.RespJSON(bean.CODE_Forbidden,err.Error())
-			return
-		}
+		//endType,err :=models.GetEndTypeInfoByAllFK(articleJSON.ArticleRoot1,articleJSON.ArticleRoot2,articleJSON.ArticleLevel)
+		//if err != nil{
+		//	c.RespJSON(bean.CODE_Forbidden,err.Error())
+		//	return
+		//}
+		//fmt.Println("eeee--",endType)
+		//var article  models.Article
+		//article.EndType = &endType
+		//article.User = user
+		//article.TextContent = articleJSON.ArticleContent
+		//article.Title = articleJSON.ArticleTitle
+		//if _,err = models.AddArticle(&article);err != nil{
+		//	c.RespJSON(bean.CODE_Forbidden,err.Error())
+		//	return
+		//}
 
 
 	}

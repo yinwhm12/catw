@@ -1,23 +1,24 @@
 package main
 
-import (
-	"fmt"
-	"github.com/astaxie/beego/orm"
-	_"github.com/go-sql-driver/mysql"
-	"github.com/astaxie/beego"
-	"yinwhm.com/yin/catw/models"
-)
 
-func init()  {
-	link := fmt.Sprintf("%s:%s@(%s:%s)/%s", beego.AppConfig.String("mysqluser"),
-		beego.AppConfig.String("mysqlpass"), beego.AppConfig.String("mysqlurls"),
-		beego.AppConfig.String("mysqlport"), beego.AppConfig.String("mysqldb"))
-	orm.RegisterDataBase("default", "mysql", link)
+//import (
+//	"fmt"
+//	"github.com/astaxie/beego/orm"
+//	_"github.com/go-sql-driver/mysql"
+//	"github.com/astaxie/beego"
+//	"yinwhm.com/yin/catw/models"
+//)
+//
+//func init()  {
+//	link := fmt.Sprintf("%s:%s@(%s:%s)/%s", beego.AppConfig.String("mysqluser"),
+//		beego.AppConfig.String("mysqlpass"), beego.AppConfig.String("mysqlurls"),
+//		beego.AppConfig.String("mysqlport"), beego.AppConfig.String("mysqldb"))
+//	orm.RegisterDataBase("default", "mysql", link)
+//
+//	orm.Debug = beego.BConfig.RunMode == "dev"
+//}
 
-	orm.Debug = beego.BConfig.RunMode == "dev"
-}
-
-func main()  {
+//func main()  {
 
 	//articles, err := models.GetArticleByUser(3)
 	//if err !=nil{
@@ -40,27 +41,30 @@ func main()  {
 	//	fmt.Println("type",v.EndType,"name",v.EndType.Root1Type)
 	//}
 
-	var article models.Article
-
-	user,err := models.GetUserById(3)
-	if err != nil{
-		fmt.Println("err --")
-		return
-	}
-
-	endType, err := models.GetEndTypeInfoByAllFK(1,1,1)
-	if err != nil{
-		fmt.Println("end---")
-		return
-	}
-
-	article.User = user
-	article.EndType = endType
-	article.Title = "test"
-	if _,err = models.AddArticle(&article); err != nil{
-		fmt.Println("add ")
-		return
-	}
+	//var article models.Article
+	//
+	//user,err := models.GetUserById(3)
+	//if err != nil{
+	//	fmt.Println("err --")
+	//	return
+	//}
+	//
+	//endType, err := models.GetEndTypeInfoByAllFK(1,1,1)
+	//if err != nil{
+	//	fmt.Println("end---")
+	//	return
+	//}
+	//fmt.Println("===",user)
+	//fmt.Println("=---=",endType)
+	//
+	//
+	//article.User = user
+	//article.EndType = &endType
+	//article.Title = "test1"
+	//if _,err = models.AddArticle(&article); err != nil{
+	//	fmt.Println("add ")
+	//	return
+	//}
 
 //	root, err := models.GetAllRoot1TypeInfo(); if err != nil{
 //		fmt.Println("errr---")
@@ -70,8 +74,8 @@ func main()  {
 //		fmt.Println("id=",id,"name:",v.Root1TypeName)
 //	}
 //
-	fmt.Println("ok")
-}
+//	fmt.Println("ok")
+//}
 
 //func main()  {
 //
