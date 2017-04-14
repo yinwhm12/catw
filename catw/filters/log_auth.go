@@ -3,8 +3,6 @@ package filters
 import (
 	"github.com/astaxie/beego/context"
 	"strings"
-	"yinwhm.com/yin/catw/tool"
-	"yinwhm.com/yin/catw/models/bean"
 )
 
 var AuthLogin = func(ctx *context.Context) {
@@ -15,17 +13,12 @@ var AuthLogin = func(ctx *context.Context) {
 		ctx.Input.SetData("uid",0)
 		return
 	}
-	uid, err := tool.VerifyToken(ctx)
-	if err != nil{
-		ctx.ResponseWriter.Header().Set("Access-Control-Allow-Origin", "*")                               //允许访问源
-		ctx.ResponseWriter.Header().Set("Access-Control-Allow-Methods", "POST,DELETE, GET, PUT, OPTIONS") //允许post访问
-		ctx.ResponseWriter.Header().Set("Access-Control-Allow-Headers", "Content-Type,Authorization")     //header的类型
-		ctx.ResponseWriter.Header().Set("Access-Control-Max-Age", "1728000")
-		ctx.ResponseWriter.Header().Set("Access-Control-Allow-Credentials", "true")
-		ctx.ResponseWriter.Header().Set("content-type", "application/json") //返回数据格式是json
-		ctx.ResponseWriter.ResponseWriter.WriteHeader(bean.CODE_Unauthorized)
-		ctx.WriteString(err.Error())
-		return
-	}
-	ctx.Input.SetData("uid",uid)
+	//ctx.ResponseWriter.Header().Set("Access-Control-Allow-Origin", "*")                               //允许访问源
+	//ctx.ResponseWriter.Header().Set("Access-Control-Allow-Methods", "POST,DELETE, GET, PUT, OPTIONS") //允许post访问
+	//ctx.ResponseWriter.Header().Set("Access-Control-Allow-Headers", "Content-Type,Authorization")     //header的类型
+	//ctx.ResponseWriter.Header().Set("Access-Control-Max-Age", "1728000")
+	//ctx.ResponseWriter.Header().Set("Access-Control-Allow-Credentials", "true")
+	//ctx.ResponseWriter.Header().Set("content-type", "application/json") //返回数据格式是json
+	//ctx.ResponseWriter.ResponseWriter.WriteHeader(bean.CODE_Unauthorized)
+	//ctx.Input.SetData("uid",uid)
 }

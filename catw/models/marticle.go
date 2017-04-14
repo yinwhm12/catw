@@ -13,9 +13,9 @@ type Article struct {
 	ImgContent string `json:"img_content,omitempty" orm:"column(img_content)"`
 
 
-	User *User `json:"user" orm:"rel(fk)"`
-	EndType *EndType `json:"end_type" orm:"rel(fk)"`
-	ValueArticle *ValueArticle `json:"value_article" orm:"reverse(one)" json:"-"`
+	User *User `json:"user,omitempty" orm:"rel(fk)"`
+	EndType *EndType `json:"end_type,omitempty" orm:"rel(fk)"`
+	ValueArticle *ValueArticle `json:"value_article,omitempty" orm:"reverse(one)"`
 }
 
 func (a *Article)TableName() string {

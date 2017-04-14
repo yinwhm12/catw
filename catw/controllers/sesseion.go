@@ -65,7 +65,25 @@ func (c *SessionController)Post()  {
 	user.Pwd = ""
 	v.Pwd = ""
 
+
+	//expireCookie := time.Now().Add(time.Minute * 3)
+	//cookie := http.Cookie{Name:"Auth",Value:token,Expires:expireCookie,HttpOnly:true,Path:"/"}
+	//http.SetCookie(c.Ctx.ResponseWriter,&cookie)
+	//c.Ctx.SetCookie("Auth",token)
+	//name := "yin"
+	//go c.Ctx.SetCookie("Auth",name,expireCookie,"/")
+
+	c.AllowCross()
+	//client := &http.Client{}
+	//req, err := http.NewRequest("Post","http://127.0.0.1:8088/",nil)
+	//req.Header.Add("Auth",token)
+	//resp, err := client.Do(req)
+	//defer resp.Body.Close()
+	//c.Ctx.Output.Header("Auth",token)
+	c.Ctx.Output.Header("Auth",token)
+
 	c.RespJSON(http.StatusOK,bean.OutPutSession{Uid:user.Id,Token:user.AccessToken,Email:user.Email,Name:user.Name})
+
 	//c.RespJSONData(user)
 }
 

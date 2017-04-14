@@ -4,9 +4,9 @@ import "github.com/astaxie/beego/orm"
 
 type Root2Type struct {
 	Root2TypeId int `json:"root_2_type_id,omitempty" orm:"pk;column(root_2_type_id);auto"`
-	Root2TypeName string `json:"root_2_type_name,omitempty" orm:"column(root_2_type_name);size(11)" json:"-"`
+	Root2TypeName string `json:"root_2_type_name,omitempty" orm:"column(root_2_type_name);size(11)"`
 
-	EndType []*EndType `orm:"reverse(many)"`
+	EndType []*EndType `orm:"reverse(many)" json:"end_type,omitempty"`
 }
 
 func (r *Root2Type)TableName() string  {

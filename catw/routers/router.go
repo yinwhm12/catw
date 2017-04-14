@@ -51,4 +51,5 @@ func init() {
 	beego.AddNamespace(ns)
 
 	//beego.InsertFilter("/v1/*",beego.BeforeRouter,filters.AuthLogin,true)
+	//beego.InsertFilter("/article",beego.BeforeRouter,)
 }

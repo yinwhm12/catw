@@ -4,9 +4,9 @@ import "github.com/astaxie/beego/orm"
 
 type LevelType struct {
 	LevelTypeId int `json:"level_type_id,omitempty" orm:"pk;column(level_type_id);auto"`
-	LevelTypeName string `json:"level_type_name,omitempty" orm:"column(level_type_name);size(11)" json:"-"`
+	LevelTypeName string `json:"level_type_name,omitempty" orm:"column(level_type_name);size(11)"`
 
-	EndType []*EndType `orm:"reverse(many)"`
+	EndType []*EndType `orm:"reverse(many)" json:"end_type,omitempty"`
 }
 
 func (level *LevelType)TableName() string {

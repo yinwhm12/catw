@@ -14,10 +14,10 @@ type User struct {
 	CreatedTime int `json:"created_time,omitempty" orm:"column(created_time);null"`
 	UpdatedTime int `json:"updated_time,omitempty" orm:"column(updated_time);null"`
 	Email string `json:"email,omitempty" orm:"column(email);null"`
-	AccessToken string `json:"access_token,omitempty" orm:"column(access_token);size(255);null" json:"-"`
-	RefreshToken string `json:"refresh_token,omitempty" orm:"column(refresh_token);size(255);null" json:"-"`
+	AccessToken string `json:"access_token,omitempty" orm:"column(access_token);size(255);null" `
+	RefreshToken string `json:"refresh_token,omitempty" orm:"column(refresh_token);size(255);null"`
 
-	Article []*Article `orm:"reverse(many)"`
+	Article []*Article `orm:"reverse(many)" json:"article,omitempty"`
 }
 
 func (u *User)TableName() string  {

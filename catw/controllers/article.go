@@ -5,8 +5,6 @@ import (
 	"yinwhm.com/yin/catw/models/bean"
 	"strconv"
 	"fmt"
-	"yinwhm.com/yin/catw/client"
-	"encoding/json"
 )
 
 type ArticleController struct {
@@ -26,19 +24,36 @@ func (c *ArticleController)URLMapping()  {
 // @router / [post]
 func (c *ArticleController)Post()  {
 
-	fmt.Println("uuuuu",c.Uid())
-	var articleJSON client.ArticleJSON
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody,&articleJSON); err != nil{
-		c.RespJSON(bean.CODE_Forbidden,err.Error())
-		return
-	}else {
-		fmt.Println("articleJSON----",articleJSON)
-		user, err := models.GetUserById(c.Uid())
-		if err != nil{
-			c.RespJSON(bean.CODE_Forbidden,"用户数据有误，请重登录!")
-			return
-		}
-		fmt.Println("user--",user)
+	//c.AllowCross()
+	token := c.Ctx.Input.Header("Authorization")
+	if token == "" {
+		token = c.Ctx.Input.Query("_token")
+	}
+	fmt.Println("====",token)
+
+	//if err != nil{
+	//	fmt.Println("------00000")
+	//}
+	//splitCookie := strings.Split(cookie.String(),"Auth=")
+	//fmt.Println("lllllll--",cookie.String())
+	//fmt.Println("lllllll--",cookie.Name)
+	//fmt.Println("ssssss",splitCookie)
+
+
+
+	//fmt.Println("uuuuu",c.Uid())
+	//var articleJSON client.ArticleJSON
+	//if err := json.Unmarshal(c.Ctx.Input.RequestBody,&articleJSON); err != nil{
+	//	c.RespJSON(bean.CODE_Forbidden,err.Error())
+	//	return
+	//}else {
+	//	fmt.Println("articleJSON----",articleJSON)
+	//	user, err := models.GetUserById(c.Uid())
+	//	if err != nil{
+	//		c.RespJSON(bean.CODE_Forbidden,"用户数据有误，请重登录!")
+	//		return
+	//	}
+	//	fmt.Println("user--",user)
 		//endType,err :=models.GetEndTypeInfoByAllFK(articleJSON.ArticleRoot1,articleJSON.ArticleRoot2,articleJSON.ArticleLevel)
 		//if err != nil{
 		//	c.RespJSON(bean.CODE_Forbidden,err.Error())
@@ -56,7 +71,7 @@ func (c *ArticleController)Post()  {
 		//}
 
 
-	}
+	//}
 	c.RespJSON(bean.CODE_Success,"OK")
 	//var article models.Article
 	//if err := json.Unmarshal(c.Ctx.Input.RequestBody,&article); err != nil{
