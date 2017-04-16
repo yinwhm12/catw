@@ -2,27 +2,37 @@ package filters
 
 import (
 	"github.com/astaxie/beego/context"
-	"fmt"
+	"yinwhm.com/yin/catw/client"
+	"github.com/kataras/go-errors"
+	"yinwhm.com/yin/catw/models"
 )
 
 var BeforeWrite = func(ctx *context.Context) {
 
-	cookie := ctx.GetCookie("Auth")
-	if len(cookie) == 0{
-		fmt.Print("eerrrror--")
-	}
-	fmt.Println("------",cookie)
+	token := ctx.Request.Header.Get("Authorization")
+	if token ==""{
+		client.AllowCrows(ctx,errors.New("Miss Token,No Login!"))
+		return
+	}else{
+		flag, _ := client.CheckToken(token)
+		if flag == client.OK{
+			uid, err := models.GetUserIdByToken(token)
+			if err != nil{
+				client.AllowCrows(ctx,err)
+				return
+			}
+			ctx.Input.SetData("uid",uid)
+		}else if flag == client.TimeOver{
+			client.AllowCrows(ctx,errors.New("No Long to See!"))
+			return
 
-	//token := ctx.Input.Header("Authorization")
-	//if token == ""{
-	//	token = ctx.Input.Query("_token")
-	//}
-	//flag, _ := client.CheckToken(token)
-	//if flag == client.OK{
-	//	return
-	//}else if flag == client.TimeOver{
-	//	ctx.Redirect(bean.CODE_Forbidden,"/v1")
-	//}else{
-	//
-	//}
+		}else if flag == client.Fail{
+			client.AllowCrows(ctx,errors.New("Token Wrong!"))
+			//ctx.Redirect(401,"/")
+			return
+		}else {
+			client.AllowCrows(ctx,errors.New("Token Wrong!"))
+			return
+		}
+	}
 }

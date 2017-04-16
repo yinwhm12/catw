@@ -94,4 +94,7 @@ func GetAticlesByLevelTypeId(id int)(articles []Article,err error)  {
 	return articles, nil
 }
 
-//
+//主页 获得的课间操类型数据 filter---条件
+func GetPalyThemeIndex()  {
+	
+}

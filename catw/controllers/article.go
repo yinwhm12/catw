@@ -4,7 +4,8 @@ import (
 	"yinwhm.com/yin/catw/models"
 	"yinwhm.com/yin/catw/models/bean"
 	"strconv"
-	"fmt"
+	"yinwhm.com/yin/catw/client"
+	"encoding/json"
 )
 
 type ArticleController struct {
@@ -25,66 +26,41 @@ func (c *ArticleController)URLMapping()  {
 func (c *ArticleController)Post()  {
 
 	//c.AllowCross()
-	token := c.Ctx.Input.Header("Authorization")
-	if token == "" {
-		token = c.Ctx.Input.Query("_token")
+	//token := c.Ctx.Input.Header("Authorization")
+	//if token == "" {
+	//	token = c.Ctx.Input.Query("_token")
+	//}
+	//fmt.Println("====",token)
+	//oo:=c.Ctx.Request.Header.Get("Authorization")
+	//fmt.Println("00000000",oo)
+
+	var articleJSON client.ArticleJSON
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody,&articleJSON); err != nil{
+		c.RespJSON(bean.CODE_Forbidden,err.Error())
+		return
+	}else {
+		user, err := models.GetUserById(c.Uid())
+		if err != nil{
+			c.RespJSON(bean.CODE_Forbidden,"用户数据有误，请重登录!")
+			return
+		}
+		endType,err :=models.GetEndTypeInfoByAllFK(articleJSON.ArticleRoot1,articleJSON.ArticleRoot2,articleJSON.ArticleLevel)
+		if err != nil{
+			c.RespJSON(bean.CODE_Forbidden,err.Error())
+			return
+		}
+		var article  models.Article
+		article.EndType = &endType
+		article.User = user
+		article.TextContent = articleJSON.ArticleContent
+		article.Title = articleJSON.ArticleTitle
+		if _,err = models.AddArticle(&article);err != nil{
+			c.RespJSON(bean.CODE_Forbidden,err.Error())
+			return
+		}
 	}
-	fmt.Println("====",token)
-
-	//if err != nil{
-	//	fmt.Println("------00000")
-	//}
-	//splitCookie := strings.Split(cookie.String(),"Auth=")
-	//fmt.Println("lllllll--",cookie.String())
-	//fmt.Println("lllllll--",cookie.Name)
-	//fmt.Println("ssssss",splitCookie)
-
-
-
-	//fmt.Println("uuuuu",c.Uid())
-	//var articleJSON client.ArticleJSON
-	//if err := json.Unmarshal(c.Ctx.Input.RequestBody,&articleJSON); err != nil{
-	//	c.RespJSON(bean.CODE_Forbidden,err.Error())
-	//	return
-	//}else {
-	//	fmt.Println("articleJSON----",articleJSON)
-	//	user, err := models.GetUserById(c.Uid())
-	//	if err != nil{
-	//		c.RespJSON(bean.CODE_Forbidden,"用户数据有误，请重登录!")
-	//		return
-	//	}
-	//	fmt.Println("user--",user)
-		//endType,err :=models.GetEndTypeInfoByAllFK(articleJSON.ArticleRoot1,articleJSON.ArticleRoot2,articleJSON.ArticleLevel)
-		//if err != nil{
-		//	c.RespJSON(bean.CODE_Forbidden,err.Error())
-		//	return
-		//}
-		//fmt.Println("eeee--",endType)
-		//var article  models.Article
-		//article.EndType = &endType
-		//article.User = user
-		//article.TextContent = articleJSON.ArticleContent
-		//article.Title = articleJSON.ArticleTitle
-		//if _,err = models.AddArticle(&article);err != nil{
-		//	c.RespJSON(bean.CODE_Forbidden,err.Error())
-		//	return
-		//}
-
-
-	//}
 	c.RespJSON(bean.CODE_Success,"OK")
-	//var article models.Article
-	//if err := json.Unmarshal(c.Ctx.Input.RequestBody,&article); err != nil{
-	//	c.RespJSON(bean.CODE_Forbidden,err.Error())
-	//	return
-	//}else{//参数 有效
-	//
-	//	if _,err := models.AddArticle(&article); err == nil{
-	//		c.RespJSONData("OK")
-	//	}else {
-	//		c.RespJSON(bean.CODE_Forbidden,err.Error())
-	//	}
-	//}
+
 }
 
 // Get ...
@@ -141,6 +117,12 @@ func (c *ArticleController)GetType()  {
 	c.RespJSONData(articles)
 }
 
-
+// Get ...
+// @Title 最新主题(课间操)
+// @Description 获取最新的 课间操的主题 按时间排序 取最新 9 个
+// @router /palytime [get]
+func (c *ArticleController)GetPlayTheme()  {
+	
+}
 
 

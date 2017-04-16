@@ -11,7 +11,7 @@ import (
 	"yinwhm.com/yin/catw/controllers"
 
 	"github.com/astaxie/beego"
-	//"yinwhm.com/yin/catw/filters"
+	"yinwhm.com/yin/catw/filters"
 )
 
 func init() {
@@ -51,5 +51,5 @@ func init() {
 	beego.AddNamespace(ns)
 
 	//beego.InsertFilter("/v1/*",beego.BeforeRouter,filters.AuthLogin,true)
-	//beego.InsertFilter("/article",beego.BeforeRouter,)
+	beego.InsertFilter("/v1/article/",beego.BeforeRouter,filters.BeforeWrite,true)//写文章认证 是否登录
 }

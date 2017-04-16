@@ -128,3 +128,14 @@ func Login(email, pwd string)(u *User, err error)  {
 	return  nil, err
 
 }
+
+//通过token 获得用户的id
+func GetUserIdByToken(token string)(uid int, err error)  {
+	o := orm.NewOrm()
+	var u User
+	u = User{AccessToken:token}
+	if err = o.Read(&u,"AccessToken"); err == nil{
+		return u.Id,nil
+	}
+	return 0,err
+}

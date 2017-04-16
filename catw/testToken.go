@@ -1,5 +1,8 @@
 package main
 
+import (
+	"fmt"
+)
 
 //import (
 //	"fmt"
@@ -120,3 +123,21 @@ package main
 //	}
 //	fmt.Println("---ok")
 //}
+
+func main()  {
+	//var fiterMap map[string]int
+	id :=1
+	fiterMap := make(map[string]int)
+	fiterMap["root1"]=id
+	fiterMap["dec"]=1
+		if v, ok := fiterMap["root1"]; ok {
+			fmt.Println("fff",v)
+		}
+	if v, ok := fiterMap["dec"]; ok{
+			fmt.Println("dddd",v)
+		}else{
+			fmt.Println("nothing!")
+		}
+
+
+}

@@ -35,10 +35,8 @@ func SetToken(email string) (tokenStr string, err error) {
 func CheckToken(tokenStr string) (flag int, err error) {
 	token, err := jwt.ParseWithClaims(tokenStr,&MyCustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok{
-			fmt.Println("11111")
 			return nil ,fmt.Errorf("Unexpected signing method %v",token.Header["alg"])
 		}
-		fmt.Println("2222")
 		return []byte(token_key), nil
 	})
 	token.Claims.Valid()
@@ -51,13 +49,10 @@ func CheckToken(tokenStr string) (flag int, err error) {
 		fmt.Println("email:",claims.Email)
 			if ve, ok := err.(*jwt.ValidationError); ok{
 				if ve.Errors&jwt.ValidationErrorMalformed != 0{
-					fmt.Println("4444")
 					return Fail, err
 				} else if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0{
-					fmt.Println("5555")
 					return TimeOver, err
 				}else {
-					fmt.Println("6666")
 					return Fail, err
 				}
 		}
