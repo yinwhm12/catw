@@ -1,8 +1,5 @@
 package main
 
-import (
-	"fmt"
-)
 
 //import (
 //	"fmt"
@@ -45,7 +42,7 @@ import (
 	//}
 
 	//var article models.Article
-	//
+
 	//user,err := models.GetUserById(3)
 	//if err != nil{
 	//	fmt.Println("err --")
@@ -59,7 +56,13 @@ import (
 	//}
 	//fmt.Println("===",user)
 	//fmt.Println("=---=",endType)
-	//
+	//articles, err := models.GetPalyThemeIndex()
+	//if err != nil{
+	//	fmt.Println("errrr")
+	//	return
+	//}
+	//fmt.Println("aaaadd",articles[1].EndType.EndTypeId)
+
 	//
 	//article.User = user
 	//article.EndType = &endType
@@ -124,20 +127,20 @@ import (
 //	fmt.Println("---ok")
 //}
 
-func main()  {
-	//var fiterMap map[string]int
-	id :=1
-	fiterMap := make(map[string]int)
-	fiterMap["root1"]=id
-	fiterMap["dec"]=1
-		if v, ok := fiterMap["root1"]; ok {
-			fmt.Println("fff",v)
-		}
-	if v, ok := fiterMap["dec"]; ok{
-			fmt.Println("dddd",v)
-		}else{
-			fmt.Println("nothing!")
-		}
-
-
-}
+//func main()  {
+//	//var fiterMap map[string]int
+//	id :=1
+//	fiterMap := make(map[string]int)
+//	fiterMap["root1"]=id
+//	fiterMap["dec"]=1
+//		if v, ok := fiterMap["root1"]; ok {
+//			fmt.Println("fff",v)
+//		}
+//	if v, ok := fiterMap["dec"]; ok{
+//			fmt.Println("dddd",v)
+//		}else{
+//			fmt.Println("nothing!")
+//		}
+//
+//
+//}
