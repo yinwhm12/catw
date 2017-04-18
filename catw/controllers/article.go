@@ -120,9 +120,20 @@ func (c *ArticleController)GetType()  {
 // Get ...
 // @Title 最新主题(课间操)
 // @Description 获取最新的 课间操的主题 按时间排序 取最新 9 个
-// @router /palytime [get]
+// @router /palytime/:id [get]
 func (c *ArticleController)GetPlayTheme()  {
-	
+	idStr := c.GetString("id" )
+	id, _ := strconv.Atoi(idStr)
+	articles, err := models.GetPalyThemeIndex(id)
+	if err != nil{
+		c.RespJSON(bean.CODE_Params_Err,err.Error())
+		return
+	}
+	if len(articles) == 0{
+		c.RespJSON(bean.CODE_Params_Err,"数据不存在!")
+		return
+	}
+	c.RespJSONData(articles)
 }
 
 
