@@ -25,6 +25,7 @@ func (c *SessionController)URLMapping()  {
 // @Title 登录
 // @Description 用户登录，创建会话
 // @Param	body body
+// @Param	body body
 // @Success 200
 // @Failure 403
 // @router / [post]

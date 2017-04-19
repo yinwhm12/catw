@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"yinwhm.com/yin/catw/client"
 	"encoding/json"
+	"fmt"
 )
 
 type ArticleController struct {
@@ -65,12 +66,14 @@ func (c *ArticleController)Post()  {
 
 // Get ...
 // @Title 具体文章 帖子
+// @Param	id		path 	string	true
 // @Success 200
 // @Failure 403
 // @router /:id [get]
 func (c *ArticleController)GetOne()  {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
+	fmt.Println("-----ssss",id)
 	article, err := models.GetArticleById(id)
 	if err != nil{
 		c.RespJSON(bean.CODE_Forbidden,err.Error())
@@ -120,10 +123,13 @@ func (c *ArticleController)GetType()  {
 // Get ...
 // @Title 最新主题(课间操)
 // @Description 获取最新的 课间操的主题 按时间排序 取最新 9 个
-// @router /palytime/:id [get]
+// @Param	id		path 	string	true
+// @Param	body		body 		true
+// @router /getNine/:id [get]
 func (c *ArticleController)GetPlayTheme()  {
-	idStr := c.GetString("id" )
+	idStr := c.Ctx.Input.Param("id" )
 	id, _ := strconv.Atoi(idStr)
+	fmt.Println("---------",id)
 	articles, err := models.GetPalyThemeIndex(id)
 	if err != nil{
 		c.RespJSON(bean.CODE_Params_Err,err.Error())

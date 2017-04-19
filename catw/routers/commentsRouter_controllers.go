@@ -30,7 +30,7 @@ func init() {
 	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:ArticleController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:ArticleController"],
 		beego.ControllerComments{
 			Method: "GetPlayTheme",
-			Router: `/palytime/:id`,
+			Router: `/getNine/:id`,
 			AllowHTTPMethods: []string{"get"},
 			Params: nil})
 
