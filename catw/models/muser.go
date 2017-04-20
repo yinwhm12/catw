@@ -139,3 +139,19 @@ func GetUserIdByToken(token string)(uid int, err error)  {
 	}
 	return 0,err
 }
+
+//通过ids 获得一批 用户的信息 仅有email name
+func GetUsersByIds(ids []interface{})(userMap map[int]User, err error)  {
+	o := orm.NewOrm()
+	qs := o.QueryTable(new(User))
+	var users []User
+	if _,err = qs.Filter("Id__in",ids).All(&users,"Id","Name","Email"); err != nil{
+		return
+	}
+
+	userMap = map[int]User{}
+	for _, u := range users {
+		userMap[u.Id] = u
+	}
+	return userMap,nil
+}

@@ -7,6 +7,8 @@ import (
 	"yinwhm.com/yin/catw/client"
 	"encoding/json"
 	"fmt"
+	"sort"
+	"yinwhm.com/yin/catw/utils"
 )
 
 type ArticleController struct {
@@ -127,9 +129,8 @@ func (c *ArticleController)GetType()  {
 // @Param	body		body 		true
 // @router /getNine/:id [get]
 func (c *ArticleController)GetPlayTheme()  {
-	idStr := c.Ctx.Input.Param("id" )
+	idStr := c.Ctx.Input.Param(":id" )
 	id, _ := strconv.Atoi(idStr)
-	fmt.Println("---------",id)
 	articles, err := models.GetPalyThemeIndex(id)
 	if err != nil{
 		c.RespJSON(bean.CODE_Params_Err,err.Error())
@@ -139,6 +140,44 @@ func (c *ArticleController)GetPlayTheme()  {
 		c.RespJSON(bean.CODE_Params_Err,"数据不存在!")
 		return
 	}
+	c.RespJSONData(articles)
+}
+
+// @Description 主页面获取 文章 具体的5个
+// @router /getThemes/:id [get]
+func (c *ArticleController)GetThemesIndex()  {
+	idStr := c.Ctx.Input.Param(":id")
+	flag := c.GetString("flag")
+	id, _ := strconv.Atoi(idStr)
+	fmt.Println("----ffff",flag)
+	articles, err := models.GetThemesByRoot1Id(flag,id)
+	if err != nil{
+		c.RespJSON(bean.CODE_Params_Err,"暂无数据!")
+		return
+	}
+	length := len(articles)
+	if length == 0{
+		c.RespJSON(bean.CODE_Params_Err,"暂无数据!")
+		return
+	}
+	Dlinks := make([]int,length)
+	for i, s := range articles{
+		Dlinks[i] = s.User.Id
+	}
+	sort.Ints(Dlinks)
+	links := utils.Duplicate(Dlinks)
+	//获取作者
+	userMap, err := models.GetUsersByIds(links)
+	if err != nil{
+		c.RespJSON(bean.CODE_Params_Err,err.Error())
+		return
+	}
+	for i, s := range articles{
+		if u, ok  := userMap[s.User.Id]; ok{
+			articles[i].User = &u
+		}
+	}
+
 	c.RespJSONData(articles)
 }
 

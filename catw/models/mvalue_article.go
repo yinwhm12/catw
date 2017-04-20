@@ -9,7 +9,7 @@ type ValueArticle struct {
 	CollectedCount int `json:"collected_count,omitempty" orm:"column(collected_count)"`
 
 
-	Article *Article `json:"article,omitempty" orm:"rel(one)"`
+	Article *Article `json:"article,omitempty" orm:"reverse(one)"`
 }
 
 func (v *ValueArticle)TableName() string  {

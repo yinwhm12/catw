@@ -13,9 +13,11 @@ type Article struct {
 	ImgContent string `json:"img_content,omitempty" orm:"column(img_content)"`
 
 
+	UserEmail string  `json:"user_email,omitempty" orm:"-"`
+
 	User *User `json:"user,omitempty" orm:"rel(fk)"`
 	EndType *EndType `json:"end_type,omitempty" orm:"rel(fk)"`
-	ValueArticle *ValueArticle `json:"value_article,omitempty" orm:"reverse(one)"`
+	ValueArticle *ValueArticle `json:"value_article,omitempty" orm:"rel(one)"`
 }
 
 func (a *Article)TableName() string {
@@ -58,14 +60,14 @@ func GetArticlesByEndType(id int)(articles *[]Article,err error)  {
 	return articles, nil
 }
 
-//通过rootId 类型获得
+//通过root1Id 类型获得
 func GetAticlesByRoot1Id(root1_id int)(articles []Article, err error)  {
 	o := orm.NewOrm()
 	_, err = o.Raw("SELECT * FROM acticle a INER JOIN end_type e on " +
 		"a.end_type_id = e.end_type_id WHERE e.root1_type_id = (" +
 		"SELECT root_1_type_id From root_1_type Where root_1_type_id = ?",root1_id).QueryRows(&articles)
 	if err != nil{
-		return nil, err
+		return
 	}
 	return articles, nil
 }
@@ -104,5 +106,24 @@ func GetPalyThemeIndex(id int) (articles []Article, err error) {
 		return
 	}
 	return articles, nil
+}
+
+//通过root1Id 获得 不同的数据量    构造查询
+func GetThemesByRoot1Id(flag string, id int)(articles []Article, err error)  {
+	qb, _ := orm.NewQueryBuilder("mysql")
+	qb.Select("*").From("article").InnerJoin("end_type").
+		On("article.end_type_id = end_type.end_type_id").InnerJoin("root_1_type").
+		On("end_type.root1_type_id = root_1_type.root_1_type_id").
+		Where("root_1_type.root_1_type_id = ?").OrderBy("article.created_time").Desc()
+	if flag == "index"{
+		qb.Limit(5).Offset(0)
+	}
+	sql := qb.String()
+	o := orm.NewOrm()
+	if _, err = o.Raw(sql,id).QueryRows(&articles); err != nil{
+		return
+	}
+	return articles, nil
+
 }
 
