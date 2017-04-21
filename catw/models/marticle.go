@@ -99,7 +99,7 @@ func GetAticlesByLevelTypeId(id int)(articles []Article,err error)  {
 //主页 获得的课间操类型数据 根据id 获得相应类型最新的 文章 或者 帖子 或者 课间操
 func GetPalyThemeIndex(id int) (articles []Article, err error) {
 	o := orm.NewOrm()
-	if _, err = o.Raw("SELECT title,created_time FROM article a INNER JOIN" +
+	if _, err = o.Raw("SELECT tid,title,created_time FROM article a INNER JOIN" +
 		" end_type e ON a.end_type_id = e.end_type_id INNER JOIN root_1_type r " +
 		"ON e.root1_type_id = r.root_1_type_id WHERE r.root_1_type_id = ? " +
 		"ORDER BY a.created_time DESC LIMIT 0,9",id).QueryRows(&articles); err != nil{
