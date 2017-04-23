@@ -54,6 +54,20 @@ func GetUserById(id int)(u *User,err error)  {
 	}
 	return nil, err
 }
+//通过对象获得 user全部信息
+func GetUserByUser(user *User)(err error)  {
+	o := orm.NewOrm()
+	err = o.Read(user)
+	return
+}
+
+func GetUserEmailNameById(id int)(u *User,err error)  {
+	o := orm.NewOrm()
+	u = &User{Id:id}
+	err = o.Read(u)
+	return
+
+}
 
 func UpdateUserById(u *User) (err error)  {
 	o := orm.NewOrm()

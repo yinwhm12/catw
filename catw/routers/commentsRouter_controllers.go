@@ -16,7 +16,7 @@ func init() {
 	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:ArticleController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:ArticleController"],
 		beego.ControllerComments{
 			Method: "GetOne",
-			Router: `/:id`,
+			Router: `/getOne/:id`,
 			AllowHTTPMethods: []string{"get"},
 			Params: nil})
 

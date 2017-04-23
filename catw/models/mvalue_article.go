@@ -10,6 +10,7 @@ type ValueArticle struct {
 
 
 	Article *Article `json:"article,omitempty" orm:"reverse(one)"`
+	//Article *Article `json:"article,omitempty" orm:"rel(fk)"`
 }
 
 func (v *ValueArticle)TableName() string  {
