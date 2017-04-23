@@ -44,7 +44,7 @@ func GetArticleById(id int) (a *Article,err error)  {
 	return nil, err
 }
 
-func GetArticlesByUser(id int)(articles *[]Article,err error)  {
+func GetArticlesByUser(id int)(articles []Article,err error)  {
 	if _,err =orm.NewOrm().QueryTable("article").
 		Filter("User",id).RelatedSel().All(&articles); err != nil{
 		return nil,err
@@ -87,7 +87,7 @@ func GetAticlesByRoot2Id(root2_id int)(articles []Article,err error)  {
 //通过 LevelTypeId
 func GetAticlesByLevelTypeId(id int)(articles []Article,err error)  {
 	o := orm.NewOrm()
-	_, err = o.Raw("SELECT * FROM acticle a INER JOIN end_type e on " +
+	_, err = o.Raw("SELECT * FROM acticle a INNER JOIN end_type e on " +
 		"a.end_type_id = e.end_type_id WHERE e.level_type_id = (" +
 		"SELECT level_type_id From level_type Where level_type_id = ?",id).QueryRows(&articles)
 	if err != nil{
