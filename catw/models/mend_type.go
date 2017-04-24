@@ -70,6 +70,23 @@ func GetEndTypeInfoByAllFK(root1,root2,level int)(endType EndType,err error)  {
 
 }
 
+//获取 end_type表的id(是个数组) 通过root1 root2 level的混合组合
+func GetEndTypeIds(mapIds map[string]int)(endType []EndType,err error)  {
+	o := orm.NewOrm()
+	qs := o.QueryTable(new(EndType))
+	if root1_id, ok := mapIds["root1"]; ok {
+		qs = qs.Filter("Root1Type",root1_id)
+	}
+	if root2_id, ok := mapIds["root2"]; ok{
+		qs = qs.Filter("Root2Type",root2_id)
+	}
+	if level_type_id, ok := mapIds["level"]; ok{
+		qs = qs.Filter("LevelType",level_type_id)
+	}
+	_,err = qs.All(&endType)
+	return
+}
+
 
 
 

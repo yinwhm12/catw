@@ -188,4 +188,45 @@ func (c *ArticleController)GetThemesIndex()  {
 	c.RespJSONData(articles)
 }
 
+// @Description 获取全部 参数类型两种类型 其一为root1 其二为root2
+// @router /getAll [get]
+func (c *ArticleController)GetAll()  {
+	var mapIds map[string]int
+	mapIds = make(map[string]int)
+	root1,err  := c.GetInt("root1")
+	if err != nil {
+		c.RespJSON(bean.CODE_Params_Err,err.Error())
+		return
+	}else{
+		mapIds["root1"] = root1
+	}
+	root2, err := c.GetInt("root2")
+	if err != nil {
+		c.RespJSON(bean.CODE_Params_Err, err.Error())
+		return
+	}else {
+		mapIds["root2"] = root2
+	}
+	limit, err := c.GetInt("limit")
+	if err != nil{
+		c.RespJSON(bean.CODE_Params_Err, err.Error())
+		return
+	}
+	offset, err := c.GetInt("offset")
+	if err != nil {
+		c.RespJSON(bean.CODE_Params_Err,err.Error())
+		return
+	}
+	//获取具体的类型 即end_type
+	endTypes, err := models.GetEndTypeIds(mapIds)
+	if err != nil{
+		c.RespJSON(bean.CODE_Params_Err,err.Error())
+		return
+	}
+
+
+
+
+}
+
 

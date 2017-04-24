@@ -3,6 +3,7 @@ package models
 import (
 	"github.com/astaxie/beego/orm"
 	"time"
+	"fmt"
 )
 
 type Article struct {
@@ -126,4 +127,35 @@ func GetThemesByRoot1Id(flag string, id int)(articles []Article, err error)  {
 	return articles, nil
 
 }
+
+//通过endType数组获得全部的数据 获得分页 每页数量为10
+func GetIndexAllByPage(ids []int,limit, offset int)(articles []Article,total int64, err error){
+	o := orm.NewOrm()
+	qs := o.QueryTable(new(Article))
+	qs = qs.Filter("EndType__in",ids)
+	total, err = qs.Count()
+	if err != nil{
+		return
+	}
+	_, err = qs.Limit(limit).Offset(offset).All(&articles)
+
+	return
+
+}
+
+//test 
+func GetPages(root1 int)(articles []Article, err error)  {
+	o := orm.NewOrm()
+	qs := o.QueryTable(new(Article))
+	cout, err := qs.Count()
+	fmt.Println("all------",cout)
+	if err != nil{
+		return
+	}
+
+	_, err = qs.Filter("EndType__end_type_id",root1).All(&articles)
+	return
+
+}
+
 
