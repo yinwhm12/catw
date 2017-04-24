@@ -1,24 +1,24 @@
 package main
 
 
-import (
-	"fmt"
-	"github.com/astaxie/beego/orm"
-	_"github.com/go-sql-driver/mysql"
-	"github.com/astaxie/beego"
-	"yinwhm.com/yin/catw/models"
-)
+//import (
+//	"fmt"
+//	"github.com/astaxie/beego/orm"
+//	_"github.com/go-sql-driver/mysql"
+//	"github.com/astaxie/beego"
+//	"yinwhm.com/yin/catw/models"
+//)
+//
+//func init()  {
+//	link := fmt.Sprintf("%s:%s@(%s:%s)/%s", beego.AppConfig.String("mysqluser"),
+//		beego.AppConfig.String("mysqlpass"), beego.AppConfig.String("mysqlurls"),
+//		beego.AppConfig.String("mysqlport"), beego.AppConfig.String("mysqldb"))
+//	orm.RegisterDataBase("default", "mysql", link)
+//
+//	orm.Debug = beego.BConfig.RunMode == "dev"
+//}
 
-func init()  {
-	link := fmt.Sprintf("%s:%s@(%s:%s)/%s", beego.AppConfig.String("mysqluser"),
-		beego.AppConfig.String("mysqlpass"), beego.AppConfig.String("mysqlurls"),
-		beego.AppConfig.String("mysqlport"), beego.AppConfig.String("mysqldb"))
-	orm.RegisterDataBase("default", "mysql", link)
-
-	orm.Debug = beego.BConfig.RunMode == "dev"
-}
-
-func main()  {
+//func main()  {
 
 	//articles, err := models.GetArticleByUser(3)
 	//if err !=nil{
@@ -89,33 +89,43 @@ func main()  {
 //	fmt.Println("ooooooo",articles)
 //	fmt.Println("ooooooo",len(articles))
 
-	var mapIds map[string]int
-	mapIds = make(map[string]int)
-	mapIds["root1"]=1
-	endTypes, err := models.GetEndTypeIds(mapIds)
-	if err != nil{
-		fmt.Println("nnnnnnn")
-		return
-	}
-	fmt.Println("========",len(endTypes))
-	//length := len(endTypes)
-	links := make([]int, len(endTypes))
-
-	for _, s := range endTypes{
-		links = append(links,s.EndTypeId)
-		fmt.Println("-------i",s.EndTypeId)
-	}
-
-	articles, err := models.GetIndexAllByPage(links)
-	if err != nil{
-		fmt.Println("-------errrrr")
-		return
-	}
-	fmt.Println("pppppp",len(articles))
-	fmt.Println("ppppppwww",articles)
+	//var mapIds map[string]int
+	//mapIds = make(map[string]int)
+	//mapIds["root1"]=1
+	//endTypes, err := models.GetEndTypeIds(mapIds)
+	//if err != nil{
+	//	fmt.Println("nnnnnnn")
+	//	return
+	//}
+	//fmt.Println("========",len(endTypes))
+	////length := len(endTypes)
+	//links := make([]int, len(endTypes))
+	//
+	//for _, s := range endTypes{
+	//	links = append(links,s.EndTypeId)
+	//	fmt.Println("-------i",s.EndTypeId)
+	//}
+	//
+	//articles, _,err := models.GetIndexAllByPage(links,50,0)
+	//if err != nil{
+	//	fmt.Println("-------errrrr")
+	//	return
+	//}
+	//fmt.Println("pppppp",len(articles))
+	//fmt.Println("ppppppwww",articles)
+	//uLinks := make([]int, len(articles))
+	//for _, s := range articles{
+	//	uLinks = append(uLinks,s.Tid)
+	//}
+	// err = models.AddUserInfoByArticleId(articles)
+	//if err != nil{
+	//	fmt.Println("addddddd")
+	//	return
+	//}
+	//fmt.Println("---------rrrr",articles)
 
 //	fmt.Println("ok")
-}
+//}
 
 //func main()  {
 //

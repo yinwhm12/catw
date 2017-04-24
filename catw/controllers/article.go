@@ -223,7 +223,33 @@ func (c *ArticleController)GetAll()  {
 		c.RespJSON(bean.CODE_Params_Err,err.Error())
 		return
 	}
-
+	links := make([]int, len(endTypes))
+	for _, s := range endTypes {
+		links = append(links,s.EndTypeId)
+	}
+	articles, total, err := models.GetIndexAllByPage(links,limit,offset)
+	if err != nil{
+		c.RespJSON(bean.CODE_Params_Err,err.Error())
+		return
+	}
+	Dlinks := make([]int,len(articles))
+	for _,s := range articles{
+		Dlinks = append(Dlinks,s.User.Id)
+	}
+	sort.Ints(Dlinks)
+	uLinks := utils.Duplicate(Dlinks)
+	//获取作者
+	userMap, err := models.GetUsersByIds(uLinks)
+	if err != nil{
+		c.RespJSON(bean.CODE_Params_Err, err.Error())
+		return
+	}
+	for i, s := range articles{
+		if u, ok  := userMap[s.User.Id]; ok{
+			articles[i].User = &u
+		}
+	}
+	c.RespJSONDataWithTotal(articles,total)
 
 
 
