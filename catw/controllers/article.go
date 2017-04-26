@@ -193,20 +193,21 @@ func (c *ArticleController)GetThemesIndex()  {
 // @router /getAll [get]
 func (c *ArticleController)GetAll()  {
 	var mapIds map[string]int
+	flagBool := 0
 	mapIds = make(map[string]int)
 	root1,err  := c.GetInt("root1")
-	if err != nil {
-		c.RespJSON(bean.CODE_Params_Err,err.Error())
-		return
-	}else{
+	if err == nil{
+		flagBool++
 		mapIds["root1"] = root1
 	}
 	root2, err := c.GetInt("root2")
-	if err != nil {
+	if err == nil{
+		flagBool++
+		mapIds["root2"] = root2
+	}
+	if flagBool == 0{
 		c.RespJSON(bean.CODE_Params_Err, err.Error())
 		return
-	}else {
-		mapIds["root2"] = root2
 	}
 	limit, err := c.GetInt("limit")
 	if err != nil{
