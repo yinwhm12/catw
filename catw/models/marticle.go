@@ -18,7 +18,7 @@ type Article struct {
 
 	User *User `json:"user,omitempty" orm:"rel(fk)"`
 	EndType *EndType `json:"end_type,omitempty" orm:"rel(fk)"`
-	ValueArticle *ValueArticle `json:"value_article,omitempty" orm:"rel(one)"`
+	ValueArticle *ValueArticle `json:"value_article,omitempty" orm:"rel(fk)"`
 }
 
 func (a *Article)TableName() string {
@@ -29,11 +29,23 @@ func init()  {
 	orm.RegisterModel(new(Article))
 }
 
-func AddArticle(a *Article)(id int64,err error)  {
+//func AddArticleByOne2One(a *Article)(err error)  {
+//	a.CreatedTime = int(time.Now().Unix())
+//	valueArticle := ValueArticle{ReadCount:1}
+//
+//
+//	o := orm.NewOrm()
+//	valueArticle.Article = a
+//	_, err = o.Insert(a)
+//
+//	_, err = o.Insert(&valueArticle)
+//	return
+//}
+func AddArticle(a *Article)(err error)  {
 	a.CreatedTime = int(time.Now().Unix())
 	o := orm.NewOrm()
-	id, err = o.Insert(a)
-	return 
+	_, err = o.Insert(a)
+	return
 }
 
 func GetArticleById(id int) (a *Article,err error)  {
@@ -126,6 +138,20 @@ func GetThemesByRoot1Id(flag string, id int)(articles []Article, err error)  {
 	}
 	return articles, nil
 
+}
+
+//获取 value_article   有错
+func GetValueArticleByArticle(articles *[]Article)(err error)  {
+	if len(*articles) == 0{
+		return
+	}
+	 links :=make([]int,len(*articles))
+	for i, s := range *articles{
+		links[i] = s.Tid
+	}
+	o := orm.NewOrm()
+	_, err = o.QueryTable(new(ValueArticle)).Filter("Article__Tid",links).All(&articles)
+	return
 }
 
 //通过endType数组获得全部的数据 获得分页 每页数量为10

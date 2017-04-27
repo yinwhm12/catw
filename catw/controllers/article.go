@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"yinwhm.com/yin/catw/client"
 	"encoding/json"
-	"fmt"
 	"sort"
 	"yinwhm.com/yin/catw/utils"
 )
@@ -28,14 +27,6 @@ func (c *ArticleController)URLMapping()  {
 // @router / [post]
 func (c *ArticleController)Post()  {
 
-	//c.AllowCross()
-	//token := c.Ctx.Input.Header("Authorization")
-	//if token == "" {
-	//	token = c.Ctx.Input.Query("_token")
-	//}
-	//fmt.Println("====",token)
-	//oo:=c.Ctx.Request.Header.Get("Authorization")
-	//fmt.Println("00000000",oo)
 
 	var articleJSON client.ArticleJSON
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody,&articleJSON); err != nil{
@@ -57,10 +48,21 @@ func (c *ArticleController)Post()  {
 		article.User = user
 		article.TextContent = articleJSON.ArticleContent
 		article.Title = articleJSON.ArticleTitle
-		if _,err = models.AddArticle(&article);err != nil{
+		//往数据库新增 一条价值
+		value_article, err := models.AddValueArticle()
+		if err != nil{
+			c.RespJSON(bean.CODE_Params_Err,err.Error())
+			return
+		}
+		article.ValueArticle = &value_article
+		if err = models.AddArticle(&article);err != nil{
+			//添加文章失败 删除该已添加的
+			err = models.DeletValueArticleById(&value_article)
 			c.RespJSON(bean.CODE_Forbidden,err.Error())
 			return
 		}
+
+
 	}
 	c.RespJSON(bean.CODE_Success,"OK")
 
@@ -75,7 +77,6 @@ func (c *ArticleController)Post()  {
 func (c *ArticleController)GetOne()  {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	fmt.Println("-----ssss",id)
 	article, err := models.GetArticleById(id)
 	if err != nil{
 		c.RespJSON(bean.CODE_Forbidden,err.Error())
@@ -86,13 +87,17 @@ func (c *ArticleController)GetOne()  {
 		}
 		article.User.Pwd=""
 		//fmt.Println("---user",article.User)
-		//获取作者信息 评价等信息
+		//获取 评价等信息
+		if err = models.GetOneValueById(article.ValueArticle); err != nil{
+			c.RespJSON(bean.CODE_Params_Err, err.Error())
+			return
+		}
 
 		c.RespJSONData(article)
 	}
 }
 
-// Get All
+// Get
 // @Title 取某个类型(root1 root2 levelType)的全部内容
 // @Params  type 类型
 // @router /type [get]
@@ -157,7 +162,6 @@ func (c *ArticleController)GetThemesIndex()  {
 	idStr := c.Ctx.Input.Param(":id")
 	flag := c.GetString("flag")
 	id, _ := strconv.Atoi(idStr)
-	fmt.Println("----ffff",flag)
 	articles, err := models.GetThemesByRoot1Id(flag,id)
 	if err != nil{
 		c.RespJSON(bean.CODE_Params_Err,"暂无数据!")
@@ -169,8 +173,10 @@ func (c *ArticleController)GetThemesIndex()  {
 		return
 	}
 	Dlinks := make([]int,length)
+	vlinks := make([]int, length)
 	for i, s := range articles{
 		Dlinks[i] = s.User.Id
+		vlinks[i] = s.ValueArticle.ValueArticleId//价值 id
 	}
 	sort.Ints(Dlinks)
 	links := utils.Duplicate(Dlinks)
@@ -180,9 +186,19 @@ func (c *ArticleController)GetThemesIndex()  {
 		c.RespJSON(bean.CODE_Params_Err,err.Error())
 		return
 	}
+	//获取价值
+
+	valueMap, err := models.GetAllValueByIds(vlinks)
+	if err != nil{
+		c.RespJSON(bean.CODE_Params_Err, err.Error())
+		return
+	}
 	for i, s := range articles{
 		if u, ok  := userMap[s.User.Id]; ok{
 			articles[i].User = &u
+		}
+		if v, ok := valueMap[s.ValueArticle.ValueArticleId]; ok{
+			articles[i].ValueArticle = &v
 		}
 	}
 
@@ -235,8 +251,10 @@ func (c *ArticleController)GetAll()  {
 		return
 	}
 	Dlinks := make([]int,len(articles))
+	vlinks := make([]int, len(articles))
 	for _,s := range articles{
 		Dlinks = append(Dlinks,s.User.Id)
+		vlinks = append(vlinks,s.ValueArticle.ValueArticleId)//价值
 	}
 	sort.Ints(Dlinks)
 	uLinks := utils.Duplicate(Dlinks)
@@ -246,9 +264,21 @@ func (c *ArticleController)GetAll()  {
 		c.RespJSON(bean.CODE_Params_Err, err.Error())
 		return
 	}
+	//获取价值
+	valueMap, err := models.GetAllValueByIds(vlinks)
+	if err != nil{
+		c.RespJSON(bean.CODE_Params_Err, err.Error())
+		return
+	}
+
 	for i, s := range articles{
+		//用户 赋值
 		if u, ok  := userMap[s.User.Id]; ok{
 			articles[i].User = &u
+		}
+		//价值 赋值
+		if v, ok := valueMap[s.ValueArticle.ValueArticleId]; ok{
+			articles[i].ValueArticle = &v
 		}
 	}
 	c.RespJSONDataWithTotal(articles,total)
