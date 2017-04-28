@@ -85,3 +85,44 @@ func AddOneByUpById(id int)(err error)  {
 	}
 	return nil
 }
+
+//点赞次数 减一
+func DeletOneByUpId(id int)(err error)  {
+	o := orm.NewOrm()
+	valueArticle := ValueArticle{ValueArticleId:id}
+	if o.Read(&valueArticle) == nil{
+		valueArticle.UpVout--
+		if _, err = o.Update(&valueArticle); err != nil{
+			return err
+		}
+	}
+	return nil
+}
+
+//收藏数 加一
+func AddOneByCollectId(id int)(err error)  {
+	o := orm.NewOrm()
+	valueArticle := ValueArticle{ValueArticleId:id}
+	if o.Read(&valueArticle) ==nil{
+		valueArticle.CollectedCount++
+		if _, err = o.Update(&valueArticle); err != nil{
+			return err
+		}
+	}
+	return nil
+}
+
+//收藏数 减一
+func DeletOneByCollectId(id int)(err error)  {
+	o := orm.NewOrm()
+	valueArticle := ValueArticle{ValueArticleId:id}
+	if o.Read(&valueArticle) == nil{
+		valueArticle.CollectedCount--
+		if _, err = o.Update(&valueArticle); err != nil{
+			return err
+		}
+	}
+	return nil
+
+}
+

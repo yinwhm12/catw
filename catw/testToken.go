@@ -1,6 +1,7 @@
 package main
 
 
+
 //import (
 //	"fmt"
 //	"github.com/astaxie/beego/orm"
@@ -70,6 +71,16 @@ package main
 	//if _,err = models.AddArticle(&article); err != nil{
 	//	fmt.Println("add ")
 	//	return
+
+	//str := "1,2,3,4,5,11,12,21,111"
+	//st := strings.Replace(str,"1,","",1)
+	//fmt.Println("---",st)
+	//ss := strings.Split(st,",")
+	//fmt.Println("------",ss)
+	//fmt.Println("------",len(ss))
+	//fmt.Println("------1111",ss[0])
+	//fmt.Println("------ddd"," "=="")
+	//
 	//}
 
 //	root, err := models.GetAllRoot1TypeInfo(); if err != nil{

@@ -5,6 +5,7 @@ import (
 	"time"
 	"github.com/kataras/go-errors"
 	"yinwhm.com/yin/catw/utils"
+	"strings"
 )
 
 type User struct {
@@ -16,6 +17,11 @@ type User struct {
 	Email string `json:"email,omitempty" orm:"column(email);null"`
 	AccessToken string `json:"access_token,omitempty" orm:"column(access_token);size(255);null" `
 	RefreshToken string `json:"refresh_token,omitempty" orm:"column(refresh_token);size(255);null"`
+	
+	//文章收藏 存入文章id 格式如: ,1,2,3,4
+	CollectArticles string `json:"collect_articles,omitempty" orm:"column(collect_articles);size(255);null"`
+	//文章点赞 存入文章id 格式如: ,1,2,3,4
+	UpArticles string `json:"up_articles,omitempty" orm:"column(up_articles);size(255);null"`
 
 	Article []*Article `orm:"reverse(many)" json:"article,omitempty"`
 }
@@ -59,6 +65,13 @@ func GetUserByUser(user *User)(err error)  {
 	o := orm.NewOrm()
 	err = o.Read(user)
 	return
+}
+// 获取用户name email
+func GetUserInfoById(id int)(u User, err error)  {
+	o := orm.NewOrm()
+	err = o.QueryTable(new(User)).Filter("Id",id).One(&u,"Id","Name","Email")
+	return
+
 }
 
 func GetUserEmailNameById(id int)(u *User,err error)  {
@@ -168,4 +181,45 @@ func GetUsersByIds(ids []interface{})(userMap map[int]User, err error)  {
 		userMap[u.Id] = u
 	}
 	return userMap,nil
+}
+
+//获取用户点赞的文章upArticles
+func GetUpArticlesById(id int)(upArticleStr string,err error)  {
+	o := orm.NewOrm()
+	var u User
+	u = User{Id:id}
+	if err = o.Read(&u); err == nil{
+		upArticleStr = strings.TrimSpace(u.UpArticles)
+		return upArticleStr, err
+	}
+	return
+}
+
+// 点赞 更新
+func UpdateUpArticles(uid int, upArticleStr string)(err error)  {
+	o := orm.NewOrm()
+	_, err = o.QueryTable(new(User)).Filter("Id",uid).
+		Update(orm.Params{"UpArticles":upArticleStr})
+	return
+
+}
+
+// 收藏 更新
+func UpdateCollectArticles(uid int, collectArticleStr string)(err error)  {
+	o := orm.NewOrm()
+	_, err = o.QueryTable(new(User)).Filter("Id",uid).
+		Update(orm.Params{"CollectArticles":collectArticleStr})
+	return
+}
+
+// 获取收藏 总数 string
+func GetCollectArticles(id int)(collectArticles string,err error)  {
+	o := orm.NewOrm()
+	var u User
+	u = User{Id:id}
+	if err = o.Read(&u); err == nil{
+		collectArticles = strings.TrimSpace(u.CollectArticles)
+		return collectArticles, err
+	}
+	return
 }

@@ -81,17 +81,27 @@ func (c *ArticleController)GetOne()  {
 	if err != nil{
 		c.RespJSON(bean.CODE_Forbidden,err.Error())
 	}else{
-		if err = models.GetUserByUser(article.User);err != nil{
+		user,err := models.GetUserInfoById(article.User.Id)
+		if err != nil{
 			c.RespJSON(bean.CODE_Params_Err,err.Error())
 			return
 		}
-		article.User.Pwd=""
-		//fmt.Println("---user",article.User)
+
+		article.User = &user
+		//阅读次数加一
+		if err = models.AddOneByReadById(article.ValueArticle.ValueArticleId); err != nil{
+			c.RespJSON(bean.CODE_Params_Err, err.Error())
+			return
+		}
+
 		//获取 评价等信息
 		if err = models.GetOneValueById(article.ValueArticle); err != nil{
 			c.RespJSON(bean.CODE_Params_Err, err.Error())
 			return
 		}
+
+
+
 
 		c.RespJSONData(article)
 	}

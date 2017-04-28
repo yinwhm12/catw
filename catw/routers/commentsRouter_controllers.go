@@ -127,50 +127,36 @@ func init() {
 
 	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:UserController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:UserController"],
 		beego.ControllerComments{
-			Method: "Post",
-			Router: `/`,
-			AllowHTTPMethods: []string{"post"},
-			Params: nil})
-
-	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:UserController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:UserController"],
-		beego.ControllerComments{
-			Method: "GetAll",
-			Router: `/`,
-			AllowHTTPMethods: []string{"get"},
-			Params: nil})
-
-	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:UserController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:UserController"],
-		beego.ControllerComments{
-			Method: "Get",
-			Router: `/:uid`,
-			AllowHTTPMethods: []string{"get"},
-			Params: nil})
-
-	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:UserController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:UserController"],
-		beego.ControllerComments{
-			Method: "Put",
-			Router: `/:uid`,
+			Method: "SayUpArticles",
+			Router: `/sayUp/:id`,
 			AllowHTTPMethods: []string{"put"},
 			Params: nil})
 
 	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:UserController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:UserController"],
 		beego.ControllerComments{
-			Method: "Delete",
-			Router: `/:uid`,
-			AllowHTTPMethods: []string{"delete"},
+			Method: "SayCollect",
+			Router: `/sayCollect/:id`,
+			AllowHTTPMethods: []string{"put"},
 			Params: nil})
 
 	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:UserController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:UserController"],
 		beego.ControllerComments{
-			Method: "Login",
-			Router: `/login`,
+			Method: "GetUpState",
+			Router: `/getUpState/:id`,
 			AllowHTTPMethods: []string{"get"},
 			Params: nil})
 
 	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:UserController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:UserController"],
 		beego.ControllerComments{
-			Method: "Logout",
-			Router: `/logout`,
+			Method: "GetUpArticles",
+			Router: `/getUpArticles`,
+			AllowHTTPMethods: []string{"get"},
+			Params: nil})
+
+	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:UserController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:UserController"],
+		beego.ControllerComments{
+			Method: "GetCollectArticles",
+			Router: `/getCollectArticles`,
 			AllowHTTPMethods: []string{"get"},
 			Params: nil})
 
