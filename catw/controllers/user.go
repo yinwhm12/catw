@@ -6,6 +6,7 @@ import (
 	"yinwhm.com/yin/catw/models/bean"
 	"strings"
 	"strconv"
+	"fmt"
 )
 
 // Operations about Users
@@ -17,7 +18,7 @@ type UserController struct {
 // @Description 点赞  参数flag = (yes---增加   no---删除)
 // @router /sayUp/:id [put]
 func (u *UserController)SayUpArticles()  {
-	flagStr := u.Ctx.Input.Param("flag")
+	flagStr := u.GetString("flag")
 	idStr := u.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	user, err := models.GetUserById(u.Uid())
@@ -27,15 +28,29 @@ func (u *UserController)SayUpArticles()  {
 	}
 	//获取点赞string
 	upArticleStr, err := models.GetUpArticlesById(user.Id)
+	if err != nil{
+		u.RespJSON(bean.CODE_Forbidden, err.Error())
+		return
+	}
+	//根据id 判断是否有该文章
+	artcle, err := models.GetArticleById(id)
+	if err != nil{
+		u.RespJSON(bean.CODE_Forbidden,err.Error())
+		return
+	}
 	if flagStr == "yes"{//增加
-
+		if strings.Contains(upArticleStr,","+idStr){//已经点过赞了
+			u.RespJSON(bean.CODE_Forbidden,"已经点过赞了!")
+			return
+		}
 		upArticleStr +=","+idStr
 		err = models.UpdateUpArticles(user.Id,upArticleStr)
 		if err != nil{
 			u.RespJSON(bean.CODE_Params_Err,err.Error())
 			return
 		}
-		err = models.AddOneByUpById(id)//文章点赞次数减一
+		err = models.AddOneByUpById(artcle.ValueArticle.ValueArticleId)//文章点赞次数减一
+		fmt.Println("========add")
 		if err != nil{
 			u.RespJSON(bean.CODE_Params_Err,err.Error())
 			return
@@ -50,7 +65,7 @@ func (u *UserController)SayUpArticles()  {
 				u.RespJSON(bean.CODE_Params_Err,err.Error())
 				return
 			}
-			err = models.DeletOneByUpId(id)//点赞次数增加
+			err = models.DeletOneByUpId(artcle.ValueArticle.ValueArticleId)//点赞次数增加
 			if err != nil{
 				u.RespJSON(bean.CODE_Params_Err,err.Error())
 				return
@@ -70,7 +85,7 @@ func (u *UserController)SayUpArticles()  {
 // @Description 点击收藏 参数flag  = (yes---增加   no---删除)
 // @router /sayCollect/:id [put]
 func (u *UserController)SayCollect()  {
-	flagStr := u.Ctx.Input.Param("flag")
+	flagStr := u.GetString("flag")
 	idStr := u.Ctx.Input.Param(":id")
 	id,_ := strconv.Atoi(idStr)
 	user, err := models.GetUserById(u.Uid())
@@ -80,14 +95,28 @@ func (u *UserController)SayCollect()  {
 	}
 	//获取收藏string
 	collectArticles, err := models.GetCollectArticles(user.Id)
+	if err != nil{
+		u.RespJSON(bean.CODE_Forbidden, err.Error())
+		return
+	}
+	//根据id 判断是否有该文章
+	artcle, err := models.GetArticleById(id)
+	if err != nil{
+		u.RespJSON(bean.CODE_Forbidden,err.Error())
+		return
+	}
 	if flagStr == "yes"{//增加
+		if strings.Contains(collectArticles,","+idStr){//已经点过赞了
+			u.RespJSON(bean.CODE_Forbidden,"已经收藏了!")
+			return
+		}
 		collectArticles +=","+idStr
 		err = models.UpdateCollectArticles(user.Id,collectArticles)
 		if err != nil{
 			u.RespJSON(bean.CODE_Params_Err,err.Error())
 			return
 		}
-		err = models.AddOneByCollectId(id)//收藏次数增加  文章
+		err = models.AddOneByCollectId(artcle.ValueArticle.ValueArticleId)//收藏次数增加  文章
 		if err != nil{
 			u.RespJSON(bean.CODE_Params_Err,err.Error())
 			return
@@ -102,7 +131,7 @@ func (u *UserController)SayCollect()  {
 				u.RespJSON(bean.CODE_Params_Err,err.Error())
 				return
 			}
-			err = models.DeletOneByCollectId(id) //文章收藏次数 减少
+			err = models.DeletOneByCollectId(artcle.ValueArticle.ValueArticleId) //文章收藏次数 减少
 			if err != nil{
 				u.RespJSON(bean.CODE_Params_Err, err.Error())
 				return
@@ -119,28 +148,39 @@ func (u *UserController)SayCollect()  {
 	}
 }
 
-// @Description 判断是否已经点过赞 已点过赞的话返回yes 否则no
+type ArticleState struct {
+	UpState	int	`json:"up_state"`
+	CollectState	int	`json:"collect_state"`
+}
+
+// @Description 判断是否已经点过赞或者已经收藏 已点过赞的话返回yes 否则no
 // @router /getUpState/:id [get]
 func (u *UserController)GetUpState()  {
-	idStr := u.Ctx.Input.Param(":id")
+	idStr := u.Ctx.Input.Param(":id")//文章 id
 	user, err := models.GetUserById(u.Uid())
 	if err != nil{
 		u.RespJSON(bean.CODE_Forbidden,err.Error())
 		return
 	}
-	upArticles, err := models.GetUpArticlesById(user.Id)
+	articleState := ArticleState{
+		UpState:0,
+		CollectState:0,
+	}
+	upArticles,collectArticles, err := models.GetArticleStateById(user.Id)
 	if err != nil{
 		u.RespJSON(bean.CODE_Params_Err, err.Error())
 		return
 	}
-	if strings.Contains(upArticles,idStr+","){
-		u.RespJSONData("yes")
-		return
-	}else {
-		u.RespJSONData("no")
-		return
+	if strings.Contains(upArticles,","+idStr){
+		//u.RespJSONData("yes")
+		articleState.UpState = 1
 	}
+	if strings.Contains(collectArticles,","+idStr){
+		articleState.CollectState = 1
+	}
+	u.RespJSONData(articleState)
 }
+
 
 // @Description 获取用户点赞过的文章
 // @router /getUpArticles [get]

@@ -183,7 +183,20 @@ func GetUsersByIds(ids []interface{})(userMap map[int]User, err error)  {
 	return userMap,nil
 }
 
-//获取用户点赞的文章upArticles
+//获取用户点赞的文章upArticles 以及收藏的文章
+func GetArticleStateById(id int)(upArticleStr,collectArticleStr string,err error)  {
+	o := orm.NewOrm()
+	var u User
+	u = User{Id:id}
+	if err = o.Read(&u); err == nil{
+		upArticleStr = strings.TrimSpace(u.UpArticles)
+		collectArticleStr = strings.TrimSpace(u.CollectArticles)
+		return upArticleStr,collectArticleStr, err
+	}
+	return
+}
+
+
 func GetUpArticlesById(id int)(upArticleStr string,err error)  {
 	o := orm.NewOrm()
 	var u User
@@ -194,6 +207,13 @@ func GetUpArticlesById(id int)(upArticleStr string,err error)  {
 	}
 	return
 }
+
+//获取用户收藏的文章信息 collectArticles
+//func GetCollectArticlesById(id int)(collectArticleStr string, err error)  {
+//	o := orm.NewOrm()
+//
+//
+//}
 
 // 点赞 更新
 func UpdateUpArticles(uid int, upArticleStr string)(err error)  {

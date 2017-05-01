@@ -1,6 +1,8 @@
 package models
 
-import "github.com/astaxie/beego/orm"
+import (
+	"github.com/astaxie/beego/orm"
+)
 
 type ValueArticle struct {
 	ValueArticleId int `json:"value_article_id,omitempty" orm:"pk;column(value_article_id);auto"`
@@ -76,14 +78,18 @@ func GetAllValueByIds(ids []int)(valueMap map[int]ValueArticle,err error)  {
 //点赞次数 增加
 func AddOneByUpById(id int)(err error)  {
 	o := orm.NewOrm()
-	valueArticle := ValueArticle{ValueArticleId:id}
-	if o.Read(&valueArticle) ==nil{
-		valueArticle.UpVout++
-		if _, err = o.Update(&valueArticle); err != nil{
-			return err
-		}
-	}
-	return nil
+	//if o.Read(&valueArticle) ==nil{
+	//	valueArticle.UpVout++
+	//	fmt.Println("-------uuuu",valueArticle.UpVout)
+	//	if _, err = o.Update(&valueArticle,"UpVout"); err == nil{
+	//		fmt.Println("------fffiiiii")
+	//		return nil
+	//	}
+	//}
+	_, err = o.Raw("UPDATE  value_article v set v.up_vout = " +
+		"v.up_vout + 1 WHERE v.value_article_id = ?",id).Exec()
+
+	return err
 }
 
 //点赞次数 减一

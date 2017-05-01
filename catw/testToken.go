@@ -1,7 +1,6 @@
 package main
 
 
-
 //import (
 //	"fmt"
 //	"github.com/astaxie/beego/orm"
@@ -198,4 +197,33 @@ package main
 //		}
 //
 //
+//}
+
+//管道测试
+//func fibonacci(n int, c chan int) {
+//	//x, y := 1, 1
+//	//x := 1
+//	//for i := 0; i < n; i++ {
+//	//	 c <- x+i
+//	//	//x, y = y, x + y
+//	//}
+//	for i:=0; i<n; i++{
+//		go inputkey(n,c)
+//	}
+//	//close(c)
+//}
+//
+//func inputkey(n int, c chan int)  {
+//	x := 1
+//	for i := 0; i < n; i++ {
+//		 c <- x+i
+//		//x, y = y, x + y
+//	}
+//}
+//func main() {
+//	c := make(chan int, 100)
+//	go fibonacci(10, c)
+//	for i := range c {
+//		fmt.Println(i)
+//	}
 //}

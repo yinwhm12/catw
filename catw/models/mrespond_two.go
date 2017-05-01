@@ -1,6 +1,9 @@
 package models
 
-import "github.com/astaxie/beego/orm"
+import (
+	"github.com/astaxie/beego/orm"
+	"time"
+)
 
 type RespondTwo struct {
 	RespondTwoId	int	`json:"respond_two_id,omitempty" orm:"pk;column(respond_two_id);auto"`
@@ -23,16 +26,39 @@ func init()  {
 
 //添加一条评论
 func AddRespondTwo(rTwo *RespondTwo)(err error)  {
+	rTwo.CreatedTime = (int)(time.Now().Unix())
 	o := orm.NewOrm()
 	_, err = o.Insert(&rTwo)
 	return
 }
 
 //取二级评论
-func GetAllRespondTwoByROne(one RespondOne)(rTwo []RespondTwo, err error)  {
+func GetAllRespondTwoByROne(one RespondOne)(rTwo []*RespondTwo, err error)  {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(RespondTwo))
-	_, err = qs.Filter("RespondOne",one.RespondOneId).All(&rTwo)
+	_, err = qs.Filter("RespondOne",one.RespondOneId).OrderBy("CreatedTime").RelatedSel().All(&rTwo)
+	//one.RespondTwos = &rTwo
 	return
 	
+}
+
+// 传入 管道 获取二级
+func GetAllRespondTwoByChan(one RespondOne,c chan []*RespondTwo)( err error)  {
+	var rTwo []*RespondTwo
+	o := orm.NewOrm()
+	qs := o.QueryTable(new(RespondTwo))
+	_, err = qs.Filter("RespondOne",one.RespondOneId).OrderBy("CreatedTime").RelatedSel().All(&rTwo)
+	if err != nil{
+		return
+	}
+	c <- rTwo //往管道写入值
+	//close(c)
+	//one.RespondTwos = &rTwo
+	return
+
+}
+
+//利用sync 处理二级评论获得
+func GetAllRespondTwoBySync()  {
+
 }

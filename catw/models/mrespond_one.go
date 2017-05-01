@@ -1,6 +1,9 @@
 package models
 
-import "github.com/astaxie/beego/orm"
+import (
+	"github.com/astaxie/beego/orm"
+	"time"
+)
 
 type RespondOne struct {
 	RespondOneId	int 	`json:"respond_one_id,omitempty" orm:"pk;column(respond_one_id);auto"`
@@ -10,6 +13,9 @@ type RespondOne struct {
 
 	User	*User	`json:"user,omitempty" orm:"rel(fk)"`
 	Article	*Article	`json:"article,omitempty" orm:"rel(fk)"`
+
+	//RespondTwos *[]RespondTwo	`json:"respond_twos,omitempty" orm:"-"`
+	RespondTwos []*RespondTwo	`json:"respond_twos,omitempty" orm:"reverse(many)"`
 
 }
 
@@ -24,15 +30,21 @@ func init()  {
 
 //添加 一条评论
 func AddRespondOne(rOne *RespondOne)(err error)  {
+	rOne.CreatedTime = int(time.Now().Unix())
 	o := orm.NewOrm()
 	_, err = o.Insert(&rOne)
 	return
 }
 
 //取评论
-func GetAllRespondOneByArticle(article Article)(rOne []RespondOne,err error)  {
+func GetAllRespondOneByArticleId(tid int)(rOnes []RespondOne,err error)  {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(RespondOne))
-	_, err = qs.Filter("Article",article.Tid).All(&rOne)
+	_, err = qs.Filter("Article",tid).OrderBy("CreatedTime").All(&rOnes)
 	return
+}
+
+//获取 相应的二级评论
+func GetOne2ManyRespondTwo()  {
+	
 }

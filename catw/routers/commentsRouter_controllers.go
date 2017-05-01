@@ -90,6 +90,20 @@ func init() {
 			AllowHTTPMethods: []string{"delete"},
 			Params: nil})
 
+	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:RespondOneController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:RespondOneController"],
+		beego.ControllerComments{
+			Method: "Post",
+			Router: `/`,
+			AllowHTTPMethods: []string{"post"},
+			Params: nil})
+
+	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:RespondOneController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:RespondOneController"],
+		beego.ControllerComments{
+			Method: "Get",
+			Router: `/:id	[get]`,
+			AllowHTTPMethods: []string{"get"},
+			Params: nil})
+
 	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:Root1TypeController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:Root1TypeController"],
 		beego.ControllerComments{
 			Method: "Get",

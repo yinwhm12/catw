@@ -7,3 +7,8 @@ type ArticleJSON struct {
 	ArticleRoot1	int	`json:"article_root_1"`
 	ArticleLevel	int 	`json:"article_level"`
 }
+
+type RespondJSON struct {
+	TextContent	string	`json:"text_content"`
+	ArticleId	int 	`json:"article_id"`
+}
