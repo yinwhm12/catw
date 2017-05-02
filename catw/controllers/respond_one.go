@@ -8,7 +8,8 @@ import (
 	"strconv"
 	"sort"
 	"yinwhm.com/yin/catw/utils"
-	"sync"
+	"fmt"
+	"yinwhm.com/yin/catw/tool"
 )
 
 type RespondOneController struct {
@@ -51,16 +52,22 @@ func (c *RespondOneController)Post()  {
 			c.RespJSON(bean.CODE_Forbidden, err.Error())
 			return
 		}
+		//文章评论数据增加
+		err = models.AddOneByCommentById(article.ValueArticle.ValueArticleId)
+		if err != nil{
+			c.RespJSON(bean.CODE_Forbidden, err.Error())
+			return
+		}
 		c.RespJSON(bean.CODE_Success, "评论成功!")
 
 	}
 
 }
 
-// Get ...
-// @Description 获取谋篇文章具体的所有的一级评论  参数问文章id
-// @router /:id	[get]
-func (c *RespondOneController)Get()  {
+// GetAll ...
+// @Description 获取谋篇文章具体的所有的一级评论  参数为文章id
+// @router /getAll/:id [get]
+func (c *RespondOneController)GetAllResponds()  {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	rOnes, err := models.GetAllRespondOneByArticleId(id)
@@ -69,16 +76,22 @@ func (c *RespondOneController)Get()  {
 		return
 	}
 	length := len(rOnes)
+	if length ==0{
+		c.RespJSONData("no_respond")
+		return
+	}
+
 	//建立管道  获取一级评论对应下的各个二级评论
 	flag := make(chan int,1)
 	//getTwos := make(chan []*models.RespondTwo,length)
 	//获取二级评论 启动线程
 	//GetRespondTwos(rOnes,getTwos)
-	GetRespondTwos(rOnes,flag)
+	go tool.GetRespondTwos(rOnes,flag)
 
 	//获取评论者信息
 	Dlinks := make([]int,length)
 	for _, s := range rOnes{
+		fmt.Println("=========",s.User.Id)
 		Dlinks = append(Dlinks,s.User.Id)
 		//查询数据库 获取二级  进行线程查询
 		//go   models.GetAllRespondTwoByROne(&s)
@@ -88,6 +101,7 @@ func (c *RespondOneController)Get()  {
 	sort.Ints(Dlinks)
 	links := utils.Duplicate(Dlinks)
 	//获取用户信息
+	fmt.Println("--------",links)
 	userMap, err := models.GetUsersByIds(links)
 	if err != nil{
 		c.RespJSON(bean.CODE_Forbidden, err.Error())
@@ -96,6 +110,7 @@ func (c *RespondOneController)Get()  {
 	//进行相应的 user赋值
 	for i, s := range rOnes{
 		if u, ok := userMap[s.User.Id]; ok{
+			fmt.Println("usermap------",u)
 			rOnes[i].User =  &u
 		}
 	}
@@ -106,28 +121,25 @@ func (c *RespondOneController)Get()  {
 	//}
 	getFlag := <- flag //获取管道值 是否 已添加完成
 	if getFlag == length{
+
 		c.RespJSONData(rOnes)
-	}
+		for _, s := range rOnes{
+			fmt.Println("-------data----",s.RespondTwos)
+			if len(s.RespondTwos) != 0{
+				fmt.Println("------len-----",len(s.RespondTwos))
+				for _, r:=range s.RespondTwos{
+					fmt.Println("--ssss----",r.User)
+					fmt.Println("--ssss----",r)
 
-
-}
-
-//线程 从数据库获取数据
-func GetRespondTwos(rOne []models.RespondOne,flag chan int)(err error) {
-	//var i *int
-	var wg sync.WaitGroup
-	for i, s := range  rOne{
-		wg.Add(1)
-		go func() {
-			rTwo, err :=models.GetAllRespondTwoByROne(s)
-			if err != nil{
-				return
+				}
 			}
-			rOne[i].RespondTwos = rTwo
-			wg.Done()
-		}()
+		}
 	}
-	wg.Wait()
-	flag <- len(rOne)
-	return
+	
 }
+
+// @router /:id [get]
+func (c *RespondOneController)Get()  {
+	
+}
+

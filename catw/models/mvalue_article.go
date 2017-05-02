@@ -9,6 +9,7 @@ type ValueArticle struct {
 	ReadCount int `json:"read_count,omitempty" orm:"column(read_count)"` //阅读次数
 	UpVout int `json:"up_vout,omitempty" orm:"column(up_vout)"` //赞
 	CollectedCount int `json:"collected_count,omitempty" orm:"column(collected_count)"` //收藏次数
+	ValueCount int	`json:"value_count,omitempty" orm:"column(value_count)"`//点评数量
 
 
 	//Article *Article `json:"article,omitempty" orm:"reverse(one)"`
@@ -131,4 +132,16 @@ func DeletOneByCollectId(id int)(err error)  {
 	return nil
 
 }
+//评论次数增加
+func AddOneByCommentById(id int)(err error)  {
+	o := orm.NewOrm()
+	valueArticle := ValueArticle{ValueArticleId:id}
+	if o.Read(&valueArticle) == nil{
+		valueArticle.ValueCount++
+		if _,err = o.Update(&valueArticle); err != nil{
+			return  err
+		}
+	}
+	return nil
 
+}

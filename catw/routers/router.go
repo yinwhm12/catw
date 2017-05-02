@@ -44,9 +44,14 @@ func init() {
 		beego.NSNamespace("/article",
 			beego.NSInclude(&controllers.ArticleController{},
 			)),
-		beego.NSNamespace("/comment",
+		beego.NSNamespace("/comment_area",
 			beego.NSInclude(&controllers.RespondOneController{},
-			)),
+			),
+		),
+		beego.NSNamespace("/comment_two",
+			beego.NSInclude(&controllers.RespondTwoController{},
+			),
+		),
 
 
 
@@ -56,5 +61,6 @@ func init() {
 	//beego.InsertFilter("/v1/*",beego.BeforeRouter,filters.AuthLogin,true)
 	beego.InsertFilter("/v1/article/",beego.BeforeRouter,filters.BeforeWrite,true)//写文章认证 是否登录
 	beego.InsertFilter("/v1/user/*",beego.BeforeRouter,filters.BeforeWrite,true)//点赞 收藏认证 是否登录
-	beego.InsertFilter("/v1/comment/",beego.BeforeRouter,filters.BeforeWrite,true)//写评论认证 是否登录
+	beego.InsertFilter("/v1/comment_area/",beego.BeforeRouter,filters.BeforeWrite,true)//写1评论认证 是否登录
+	beego.InsertFilter("/v1/comment_two/",beego.BeforeRouter,filters.BeforeWrite,true)//写2评论认证 是否登录
 }

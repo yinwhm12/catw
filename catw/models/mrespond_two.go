@@ -13,7 +13,7 @@ type RespondTwo struct {
 
 	User	*User	`json:"user,omitempty" orm:"rel(fk)"`
 	RespondOne	*RespondOne	`json:"respond_one,omitempty" orm:"rel(fk)"`
-	Article	*Article	`json:"article,omitempty" orm:"rel(fk)"`
+	//Article	*Article	`json:"article,omitempty" orm:"rel(fk)"`
 }
 
 func (r *RespondTwo)TableName()string  {
@@ -28,7 +28,7 @@ func init()  {
 func AddRespondTwo(rTwo *RespondTwo)(err error)  {
 	rTwo.CreatedTime = (int)(time.Now().Unix())
 	o := orm.NewOrm()
-	_, err = o.Insert(&rTwo)
+	_, err = o.Insert(rTwo)
 	return
 }
 
@@ -36,7 +36,7 @@ func AddRespondTwo(rTwo *RespondTwo)(err error)  {
 func GetAllRespondTwoByROne(one RespondOne)(rTwo []*RespondTwo, err error)  {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(RespondTwo))
-	_, err = qs.Filter("RespondOne",one.RespondOneId).OrderBy("CreatedTime").RelatedSel().All(&rTwo)
+	_, err = qs.Filter("RespondOneId",one.RespondOneId).OrderBy("CreatedTime").RelatedSel().All(&rTwo)
 	//one.RespondTwos = &rTwo
 	return
 	

@@ -14,6 +14,7 @@ type Article struct {
 	ImgContent string `json:"img_content,omitempty" orm:"column(img_content)"`
 
 
+
 	UserEmail string  `json:"user_email,omitempty" orm:"-"`
 
 	User *User `json:"user,omitempty" orm:"rel(fk)"`

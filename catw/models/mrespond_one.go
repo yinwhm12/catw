@@ -32,7 +32,7 @@ func init()  {
 func AddRespondOne(rOne *RespondOne)(err error)  {
 	rOne.CreatedTime = int(time.Now().Unix())
 	o := orm.NewOrm()
-	_, err = o.Insert(&rOne)
+	_, err = o.Insert(rOne)
 	return
 }
 
@@ -47,4 +47,13 @@ func GetAllRespondOneByArticleId(tid int)(rOnes []RespondOne,err error)  {
 //获取 相应的二级评论
 func GetOne2ManyRespondTwo()  {
 	
+}
+
+//根据id 获取具体的某个一级评论
+func GetOneRespondById(id int)(rOne *RespondOne, err error)  {
+	o := orm.NewOrm()
+	rOne = &RespondOne{RespondOneId:id}
+	err = o.Read(rOne)
+	return
+
 }

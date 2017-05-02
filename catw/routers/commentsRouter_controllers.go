@@ -99,9 +99,23 @@ func init() {
 
 	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:RespondOneController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:RespondOneController"],
 		beego.ControllerComments{
-			Method: "Get",
-			Router: `/:id	[get]`,
+			Method: "GetAllResponds",
+			Router: `/getAll/:id`,
 			AllowHTTPMethods: []string{"get"},
+			Params: nil})
+
+	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:RespondOneController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:RespondOneController"],
+		beego.ControllerComments{
+			Method: "Get",
+			Router: `/:id`,
+			AllowHTTPMethods: []string{"get"},
+			Params: nil})
+
+	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:RespondTwoController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:RespondTwoController"],
+		beego.ControllerComments{
+			Method: "Post",
+			Router: `/`,
+			AllowHTTPMethods: []string{"post"},
 			Params: nil})
 
 	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:Root1TypeController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:Root1TypeController"],

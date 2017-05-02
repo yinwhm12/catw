@@ -10,5 +10,12 @@ type ArticleJSON struct {
 
 type RespondJSON struct {
 	TextContent	string	`json:"text_content"`
-	ArticleId	int 	`json:"article_id"`
+	ArticleId	int 	`json:"article_id"`//检查文章是否存在
+	ImgContent	string	`json:"img_content,omitempty"`
+}
+
+type RespondTwoJSON struct {
+	TextContent	string	`json:"text_content"`
+	RespondOne	int `json:"respond_one"`
+	ImgContent	string	`json:"img_content,omitempty"`
 }
