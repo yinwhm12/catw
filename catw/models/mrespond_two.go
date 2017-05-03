@@ -3,6 +3,7 @@ package models
 import (
 	"github.com/astaxie/beego/orm"
 	"time"
+	"fmt"
 )
 
 type RespondTwo struct {
@@ -36,10 +37,20 @@ func AddRespondTwo(rTwo *RespondTwo)(err error)  {
 func GetAllRespondTwoByROne(one RespondOne)(rTwo []*RespondTwo, err error)  {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(RespondTwo))
-	_, err = qs.Filter("RespondOneId",one.RespondOneId).OrderBy("CreatedTime").RelatedSel().All(&rTwo)
+	fmt.Println("respondId----",one.RespondOneId)
+	_, err = qs.Filter("respond_one_id",one.RespondOneId).OrderBy("CreatedTime").All(&rTwo)
 	//one.RespondTwos = &rTwo
 	return
 	
+}
+func GetAllTestRespondTwoByROne(one *RespondOne)(rTwo []*RespondTwo, err error)  {
+	o := orm.NewOrm()
+	qs := o.QueryTable(new(RespondTwo))
+	fmt.Println("respondId----",one.RespondOneId)
+	_, err = qs.Filter("respond_one_id",one.RespondOneId).OrderBy("CreatedTime").All(&rTwo)
+	//one.RespondTwos = &rTwo
+	return
+
 }
 
 // 传入 管道 获取二级

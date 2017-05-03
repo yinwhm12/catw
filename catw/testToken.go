@@ -1,6 +1,7 @@
 package main
 
 
+//
 //import (
 //	"fmt"
 //	"github.com/astaxie/beego/orm"
@@ -17,8 +18,18 @@ package main
 //
 //	orm.Debug = beego.BConfig.RunMode == "dev"
 //}
-
+//
 //func main()  {
+//	rOne, err :=models.GetOneRespondById(1)
+//	if err != nil{
+//
+//	}
+//	rTwos, err := models.GetAllTestRespondTwoByROne(rOne)
+//	fmt.Println("--------rTwo",rTwos)
+//	for _,s := range rTwos{
+//		fmt.Println("---------",s)
+//	}
+//}
 
 	//articles, err := models.GetArticleByUser(3)
 	//if err !=nil{

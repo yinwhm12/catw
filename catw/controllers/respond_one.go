@@ -86,7 +86,7 @@ func (c *RespondOneController)GetAllResponds()  {
 	//getTwos := make(chan []*models.RespondTwo,length)
 	//获取二级评论 启动线程
 	//GetRespondTwos(rOnes,getTwos)
-	go tool.GetRespondTwos(rOnes,flag)
+	go tool.GetRespondTwos(&rOnes,flag)
 
 	//获取评论者信息
 	Dlinks := make([]int,length)
@@ -130,7 +130,6 @@ func (c *RespondOneController)GetAllResponds()  {
 				for _, r:=range s.RespondTwos{
 					fmt.Println("--ssss----",r.User)
 					fmt.Println("--ssss----",r)
-
 				}
 			}
 		}
