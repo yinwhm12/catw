@@ -55,6 +55,34 @@ func init() {
 			AllowHTTPMethods: []string{"get"},
 			Params: nil})
 
+	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:MessageController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:MessageController"],
+		beego.ControllerComments{
+			Method: "PostOne",
+			Router: `/toOwner`,
+			AllowHTTPMethods: []string{"post"},
+			Params: nil})
+
+	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:MessageController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:MessageController"],
+		beego.ControllerComments{
+			Method: "PostMany",
+			Router: `/toMany`,
+			AllowHTTPMethods: []string{"post"},
+			Params: nil})
+
+	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:MessageController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:MessageController"],
+		beego.ControllerComments{
+			Method: "GetAll",
+			Router: `/`,
+			AllowHTTPMethods: []string{"get"},
+			Params: nil})
+
+	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:MessageController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:MessageController"],
+		beego.ControllerComments{
+			Method: "GetNews",
+			Router: `/getNews`,
+			AllowHTTPMethods: []string{"get"},
+			Params: nil})
+
 	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:ObjectController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:ObjectController"],
 		beego.ControllerComments{
 			Method: "Post",

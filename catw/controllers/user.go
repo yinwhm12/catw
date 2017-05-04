@@ -185,11 +185,85 @@ func (u *UserController)GetUpState()  {
 // @Description 获取用户点赞过的文章
 // @router /getUpArticles [get]
 func (u *UserController)GetUpArticles()  {
-
+	limit, err := u.GetInt("limit")
+	if err != nil{
+		u.RespJSON(bean.CODE_Forbidden, err.Error())
+		return
+	}
+	offset, err := u.GetInt("offset")
+	if err != nil{
+		u.RespJSON(bean.CODE_Forbidden, err.Error())
+		return
+	}
+	upArticleStr, err  := models.GetUpArticlesById(u.Uid())
+	if err != nil{
+		u.RespJSON(bean.CODE_Forbidden, err.Error())
+		return
+	}
+	upArticles := strings.Split(upArticleStr,",")
+	length := len(upArticles)
+	if length <=1{
+		u.RespJSON(bean.CODE_Forbidden, "暂无点赞过任何文章!")
+		return
+	}else{
+		links := make([]int, length)
+		//string z转化为 int
+		for i := 1; i<length; i++{//从1开始，0为空格
+			s,err  := strconv.Atoi(upArticles[i])
+			if err != nil{
+				u.RespJSON(bean.CODE_Forbidden,err.Error())
+				return
+			}
+			links = append(links,s)
+		}
+		articles,total, err := models.GetArticlesPageByIds(links,limit,offset)
+		if err != nil{
+			u.RespJSON(bean.CODE_Forbidden, err.Error())
+			return
+		}
+		u.RespJSONDataWithTotal(articles, total)
+	}
 }
 
 // @Description 获取用户收藏的文章
 // @router /getCollectArticles [get]
 func (u *UserController)GetCollectArticles()  {
+	limit, err := u.GetInt("limit")
+	if err != nil{
+		u.RespJSON(bean.CODE_Forbidden,err.Error())
+		return
+	}
+	offset, err := u.GetInt("offset")
+	if err != nil{
+		u.RespJSON(bean.CODE_Forbidden, err.Error())
+		return
+	}
+	collectArticleStr, err := models.GetCollectArticles(u.Uid())
+	if err != nil{
+		u.RespJSON(bean.CODE_Forbidden, err.Error())
+		return
+	}
+	collectArticles := strings.Split(collectArticleStr,",")
+	length := len(collectArticles)
+	if length <= 1{
+		u.RespJSON(bean.CODE_Params_Err, "暂无任何文章的收藏!")
+		return
+	}else {
+		links := make([]int, length)
+		for i:=1; i<length; i++{
+			s,err := strconv.Atoi(collectArticles[i])
+			if err != nil{
+				u.RespJSON(bean.CODE_Forbidden, err.Error())
+				return
+			}
+			links = append(links, s)
+		}
+		articles, total, err := models.GetArticlesPageByIds(links, limit, offset)
+		if err != nil{
+			u.RespJSON(bean.CODE_Forbidden, err.Error())
+			return
+		}
+		u.RespJSONDataWithTotal(articles, total)
+	}
 
 }

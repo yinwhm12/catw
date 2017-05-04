@@ -37,7 +37,6 @@ func AddRespondTwo(rTwo *RespondTwo)(err error)  {
 func GetAllRespondTwoByROne(one RespondOne)(rTwo []*RespondTwo, err error)  {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(RespondTwo))
-	fmt.Println("respondId----",one.RespondOneId)
 	_, err = qs.Filter("respond_one_id",one.RespondOneId).OrderBy("CreatedTime").All(&rTwo)
 	//one.RespondTwos = &rTwo
 	return
@@ -71,5 +70,29 @@ func GetAllRespondTwoByChan(one RespondOne,c chan []*RespondTwo)( err error)  {
 
 //利用sync 处理二级评论获得
 func GetAllRespondTwoBySync()  {
+
+}
+
+//通过一级Id 获取所有参与的评论的用户信息
+func GetAllUserByRespondOne(id int)(respondTwos []*RespondTwo, err error)  {
+	o := orm.NewOrm()
+	qs := o.QueryTable(new(RespondTwo))
+	_,err = qs.Filter("RespondOne",id).RelatedSel().All(&respondTwos)
+	return
+}
+
+//通过一级Id 获取所有参与的评论的用户信息id
+func GetAllUserIdsByRespondOne(id int)(ids []int, err error)  {
+	var respondTwos []*RespondTwo
+	o := orm.NewOrm()
+	qs := o.QueryTable(new(RespondTwo))
+	_, err = qs.Filter("RespondOne",id).All(&respondTwos)
+	if err ==nil{
+		for i, s := range respondTwos{
+			ids[i] = s.User.Id
+		}
+		return
+	}
+	return
 
 }

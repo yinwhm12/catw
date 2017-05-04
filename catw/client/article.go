@@ -19,3 +19,9 @@ type RespondTwoJSON struct {
 	RespondOne	int `json:"respond_one"`
 	ImgContent	string	`json:"img_content,omitempty"`
 }
+
+type MessageJSON struct {
+	ToUserID int	`json:"to_user_id,omitempty"`
+	ArticleId int	`json:"article_id,omitempty"`
+	RespondOneId	int	`json:"respond_one_id,omitempty"` //二级回复的id 从而获得用户Id
+}

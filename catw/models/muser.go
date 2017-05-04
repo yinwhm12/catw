@@ -196,7 +196,6 @@ func GetArticleStateById(id int)(upArticleStr,collectArticleStr string,err error
 	return
 }
 
-
 func GetUpArticlesById(id int)(upArticleStr string,err error)  {
 	o := orm.NewOrm()
 	var u User

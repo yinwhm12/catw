@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"sort"
 	"yinwhm.com/yin/catw/utils"
-	"fmt"
 	"yinwhm.com/yin/catw/tool"
 )
 
@@ -91,7 +90,7 @@ func (c *RespondOneController)GetAllResponds()  {
 	//获取评论者信息
 	Dlinks := make([]int,length)
 	for _, s := range rOnes{
-		fmt.Println("=========",s.User.Id)
+		//fmt.Println("=========",s.User.Id)
 		Dlinks = append(Dlinks,s.User.Id)
 		//查询数据库 获取二级  进行线程查询
 		//go   models.GetAllRespondTwoByROne(&s)
@@ -101,7 +100,7 @@ func (c *RespondOneController)GetAllResponds()  {
 	sort.Ints(Dlinks)
 	links := utils.Duplicate(Dlinks)
 	//获取用户信息
-	fmt.Println("--------",links)
+	//fmt.Println("--------",links)
 	userMap, err := models.GetUsersByIds(links)
 	if err != nil{
 		c.RespJSON(bean.CODE_Forbidden, err.Error())
@@ -110,7 +109,7 @@ func (c *RespondOneController)GetAllResponds()  {
 	//进行相应的 user赋值
 	for i, s := range rOnes{
 		if u, ok := userMap[s.User.Id]; ok{
-			fmt.Println("usermap------",u)
+			//fmt.Println("usermap------",u)
 			rOnes[i].User =  &u
 		}
 	}
@@ -123,16 +122,18 @@ func (c *RespondOneController)GetAllResponds()  {
 	if getFlag == length{
 
 		c.RespJSONData(rOnes)
-		for _, s := range rOnes{
-			fmt.Println("-------data----",s.RespondTwos)
-			if len(s.RespondTwos) != 0{
-				fmt.Println("------len-----",len(s.RespondTwos))
-				for _, r:=range s.RespondTwos{
-					fmt.Println("--ssss----",r.User)
-					fmt.Println("--ssss----",r)
-				}
-			}
-		}
+		//for _, s := range rOnes{
+		//	fmt.Println("-------data----",s.RespondTwos)
+		//	if len(s.RespondTwos) != 0{
+		//		fmt.Println("------len-----",len(s.RespondTwos))
+		//		for _, r:=range s.RespondTwos{
+		//			fmt.Println("--ssss----",r.User)
+		//			fmt.Println("--ssss----",r)
+		//		}
+		//	}
+		//}
+	}else {
+		c.RespJSON(bean.CODE_Forbidden,"数据不完整!")
 	}
 	
 }
