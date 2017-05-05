@@ -17,6 +17,10 @@ type User struct {
 	Email string `json:"email,omitempty" orm:"column(email);null"`
 	AccessToken string `json:"access_token,omitempty" orm:"column(access_token);size(255);null" `
 	RefreshToken string `json:"refresh_token,omitempty" orm:"column(refresh_token);size(255);null"`
+	Motto	string	`json:"motto,omitempty" orm:"column(motto);size(255);null"`
+	City	string	`json:"city,omitempty" orm:"column(city);size(45);null"`
+	Describe	string	`json:"describe,omitempty" orm:"column(describe);size(255);null"`
+	School	string	`json:"school,omitempty" orm:"column(school);size(255);null"`
 	
 	//文章收藏 存入文章id 格式如: ,1,2,3,4
 	CollectArticles string `json:"collect_articles,omitempty" orm:"column(collect_articles);size(255);null"`
@@ -74,6 +78,14 @@ func GetUserInfoById(id int)(u User, err error)  {
 
 }
 
+//获取用户信息 除了 pwd,token,created_time
+func GetUserNotKeyInfoById(id int)(u User,err error)  {
+	o := orm.NewOrm()
+	err = o.QueryTable(new(User)).Filter("Id",id).One(&u,"Id","Name","Email","Motto","" +
+		"City","Describe","School","UpArticles","CollectArticles")
+	return
+}
+
 func GetUserEmailNameById(id int)(u *User,err error)  {
 	o := orm.NewOrm()
 	u = &User{Id:id}
@@ -85,7 +97,7 @@ func GetUserEmailNameById(id int)(u *User,err error)  {
 func UpdateUserById(u *User) (err error)  {
 	o := orm.NewOrm()
 	u.UpdatedTime = int(time.Now().Unix())
-	fields := utils.GetNotEmptyFields(u,"Pwd")
+	fields := utils.GetNotEmptyFields(u,"Pwd","UpdatedTime")
 	num, err := o.Update(u, fields...)
 	if err != nil{
 		return
@@ -95,6 +107,15 @@ func UpdateUserById(u *User) (err error)  {
 	}
 	return
 
+}
+
+func UpdateUserInfoById(u *User)(err error)  {
+	o := orm.NewOrm()
+	u.UpdatedTime = int(time.Now().Unix())
+	fields := utils.GetNotEmptyFields(u,"Name","Motto","City","Describe","School","UpdatedTime")
+	_, err = o.Update(u, fields...)
+	return
+	
 }
 
 func GetUserInfoByEmail(email string) (u *User, err error){

@@ -8,6 +8,7 @@ import (
 	"yinwhm.com/yin/catw/models"
 	"github.com/kataras/go-errors"
 	"yinwhm.com/yin/catw/client"
+	"strconv"
 )
 
 //会话 登录 用户简单信息记录 入口
@@ -135,4 +136,18 @@ func (c *SessionController)Register()  {
 	//http.SetCookie(c.Ctx.ResponseWriter,&cookie)
 	c.RespJSON(http.StatusOK,bean.OutPutSession{Uid:user.Id,Token:user.AccessToken,Email:user.Email})
 
+}
+
+
+// @Description 获取用户除了密码以外的信息
+// @router /getUserInfo/:id [get]
+func (c *UserController)GetUserInfo()  {
+	idStr := c.Ctx.Input.Param(":id")
+	id, _ := strconv.Atoi(idStr)
+	user, err := models.GetUserNotKeyInfoById(id)
+	if err != nil{
+		c.RespJSON(bean.CODE_Forbidden,err.Error())
+		return
+	}
+	c.RespJSONData(user)
 }

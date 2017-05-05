@@ -7,6 +7,8 @@ import (
 	"strings"
 	"strconv"
 	"fmt"
+	"yinwhm.com/yin/catw/client"
+	"encoding/json"
 )
 
 // Operations about Users
@@ -265,5 +267,82 @@ func (u *UserController)GetCollectArticles()  {
 		}
 		u.RespJSONDataWithTotal(articles, total)
 	}
+
+}
+
+// @Description 修改用户的密码 首先获得旧密码
+// @router /pwd [put]
+func (c *UserController)PutPWD()  {
+	var userJSON client.UserJSON
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &userJSON); err != nil{
+		c.RespJSON(bean.CODE_Forbidden, err.Error())
+		return
+	}
+	if userJSON.OldPWD == ""|| userJSON.NewPWD == "" ||userJSON.NewPWDMore == ""{
+		c.RespJSON(bean.CODE_Params_Err,"缺少参数!")
+		return
+	}
+	if userJSON.NewPWDMore != userJSON.NewPWD{
+		c.RespJSON(bean.CODE_Params_Err,"两次密码不一致！")
+		return
+	}
+	user, err := models.GetUserById(c.Uid())
+	if err != nil{
+		c.RespJSON(bean.CODE_Forbidden, err.Error())
+		return
+	}
+	if user.Pwd != userJSON.OldPWD{
+		c.RespJSON(bean.CODE_Forbidden, "密码错误!")
+		return
+	}else{
+		user.Pwd = userJSON.NewPWD
+		err := models.UpdateUserById(user)
+		if err != nil{
+			c.RespJSON(bean.CODE_Forbidden, err.Error())
+			return
+		}
+		c.RespJSON(bean.CODE_Success,"修改成功!")
+	}
+
+}
+
+
+
+// @Description 获取自己的信息 除密码 token
+// @router /getSelf [get]
+func (c *UserController)GetSelf()  {
+	user, err := models.GetUserNotKeyInfoById(c.Uid())
+	if err != nil{
+		c.RespJSON(bean.CODE_Forbidden, err.Error())
+		return
+	}
+	c.RespJSONData(user)
+}
+
+// @Description 修改其他信息除密码以外的
+// @router /otherInfo [put]
+func (c *UserController)PutInfo()  {
+
+	//var userNotKeyJSON client.UserNotKeyJSON
+	//if err := json.Unmarshal(c.Ctx.Input.RequestBody, &userNotKeyJSON); err != nil{
+	//	c.RespJSON(bean.CODE_Forbidden, err.Error())
+	//	return
+	//}
+	user, err := models.GetUserById(c.Uid())
+	if err != nil{
+		c.RespJSON(bean.CODE_Forbidden, err.Error())
+		return
+	}
+	//var userNotKeyJSON client.UserNotKeyJSON
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &user); err != nil{
+		c.RespJSON(bean.CODE_Forbidden, err.Error())
+		return
+	}
+	err = models.UpdateUserInfoById(user)
+	if err != nil{
+		c.RespJSON(bean.CODE_Forbidden, err.Error())
+		return
+	}
+	c.RespJSON(bean.CODE_Success, "修改成功!")
 
 }
