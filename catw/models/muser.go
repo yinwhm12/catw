@@ -26,6 +26,8 @@ type User struct {
 	CollectArticles string `json:"collect_articles,omitempty" orm:"column(collect_articles);size(255);null"`
 	//文章点赞 存入文章id 格式如: ,1,2,3,4
 	UpArticles string `json:"up_articles,omitempty" orm:"column(up_articles);size(255);null"`
+	//关注人 存入用户id 格式 ,1,2,3,4,5
+	CollectUsers	string	`json:"collect_users,omitempty" orm:"column(collect_users);size(255);null"`
 
 	Article []*Article `orm:"reverse(many)" json:"article,omitempty"`
 }
@@ -262,4 +264,24 @@ func GetCollectArticles(id int)(collectArticles string,err error)  {
 		return collectArticles, err
 	}
 	return
+}
+
+// 获取关注人 总数 string类型
+func GetCollectUsersById(id int)(collectUsers string, err error)  {
+	o := orm.NewOrm()
+	var u User
+	u = User{Id:id}
+	if err = o.Read(&u);err ==nil{
+		collectUsers = strings.TrimSpace(u.CollectUsers)
+		return collectUsers,nil
+	}
+	return
+}
+
+//获取批量的用户信息 为collectUsers服务 没有分页
+func GetAllCollectUsersByIds(ids []int)(users []*User,err error)  {
+	o := orm.NewOrm()
+	_,err = o.QueryTable(new(User)).Filter("Id__in",ids).All(&users,"Id","Name","Email","Motto","City","Describe","School")
+	return
+
 }

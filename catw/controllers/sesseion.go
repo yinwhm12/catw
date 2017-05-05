@@ -141,7 +141,7 @@ func (c *SessionController)Register()  {
 
 // @Description 获取用户除了密码以外的信息
 // @router /getUserInfo/:id [get]
-func (c *UserController)GetUserInfo()  {
+func (c *SessionController)GetUserInfo()  {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	user, err := models.GetUserNotKeyInfoById(id)
@@ -151,3 +151,4 @@ func (c *UserController)GetUserInfo()  {
 	}
 	c.RespJSONData(user)
 }
+

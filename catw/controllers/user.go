@@ -307,7 +307,6 @@ func (c *UserController)PutPWD()  {
 }
 
 
-
 // @Description 获取自己的信息 除密码 token
 // @router /getSelf [get]
 func (c *UserController)GetSelf()  {
@@ -322,7 +321,6 @@ func (c *UserController)GetSelf()  {
 // @Description 修改其他信息除密码以外的
 // @router /otherInfo [put]
 func (c *UserController)PutInfo()  {
-
 	//var userNotKeyJSON client.UserNotKeyJSON
 	//if err := json.Unmarshal(c.Ctx.Input.RequestBody, &userNotKeyJSON); err != nil{
 	//	c.RespJSON(bean.CODE_Forbidden, err.Error())
@@ -344,5 +342,38 @@ func (c *UserController)PutInfo()  {
 		return
 	}
 	c.RespJSON(bean.CODE_Success, "修改成功!")
+}
 
+// @Description 查看关注了所有的人的信息 //没有分页
+// @router /getAllUser [get]
+func (c *UserController)GetAllUser()  {
+	user, err := models.GetUserById(c.Uid())
+	if err != nil{
+		c.RespJSON(bean.CODE_Forbidden, err.Error())
+		return
+	}
+	collectUserStr, err := models.GetCollectUsersById(user.Id)
+	if err != nil{
+		c.RespJSON(bean.CODE_Forbidden, err.Error())
+		return
+	}
+	ss := strings.Split(collectUserStr, ",")
+	length := len(ss)
+	if length <= 1{
+		c.RespJSON(bean.CODE_Params_Err,"暂无关注任何人!")
+		return
+	}else{
+		links := make([]int,length)
+		for i := 1; i<length; i++{
+			sInt,_ := strconv.Atoi(ss[i])
+			links = append(links,sInt)
+		}
+		users, err := models.GetAllCollectUsersByIds(links)
+		if err != nil{
+			c.RespJSON(bean.CODE_Forbidden, err.Error())
+			return
+		}
+		c.RespJSONData(users)
+
+	}
 }
