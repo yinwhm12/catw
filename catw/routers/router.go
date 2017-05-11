@@ -52,6 +52,10 @@ func init() {
 			beego.NSInclude(&controllers.RespondTwoController{},
 			),
 		),
+		beego.NSNamespace("/message",
+			beego.NSInclude(&controllers.MessageController{},
+			),
+		),
 
 
 
@@ -63,4 +67,5 @@ func init() {
 	beego.InsertFilter("/v1/user/*",beego.BeforeRouter,filters.BeforeWrite,true)//点赞 收藏认证 是否登录
 	beego.InsertFilter("/v1/comment_area/",beego.BeforeRouter,filters.BeforeWrite,true)//写1评论认证 是否登录
 	beego.InsertFilter("/v1/comment_two/",beego.BeforeRouter,filters.BeforeWrite,true)//写2评论认证 是否登录
+	beego.InsertFilter("/v1/message/*",beego.BeforeRouter,filters.BeforeWrite,true)//写2评论认证 是否登录
 }

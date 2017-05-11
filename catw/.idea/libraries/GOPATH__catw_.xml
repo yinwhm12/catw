@@ -2,15 +2,37 @@
   <library name="GOPATH &lt;catw&gt;">
     <CLASSES>
       <root url="file://$PROJECT_DIR$/../.." />
-      <root url="file://$PROJECT_DIR$/../../../kuaifa.com" />
-      <root url="file://$PROJECT_DIR$/../../../testaa" />
+      <root url="file://$PROJECT_DIR$/../../../go-vue-todos" />
       <root url="file://$PROJECT_DIR$/../../../github.com" />
+      <root url="file://$PROJECT_DIR$/../../../grbac" />
+      <root url="file://$PROJECT_DIR$/../../../beesql" />
+      <root url="file://$PROJECT_DIR$/../../../kuaifa.com" />
+      <root url="file://$PROJECT_DIR$/../../../.idea" />
+      <root url="file://$PROJECT_DIR$/../../../bee-go-vue" />
+      <root url="file://$PROJECT_DIR$/../../../goweb" />
+      <root url="file://$PROJECT_DIR$/../../../go-koans" />
+      <root url="file://$PROJECT_DIR$/../../../goTest" />
+      <root url="file://$PROJECT_DIR$/../../../sqlTest" />
+      <root url="file://$PROJECT_DIR$/../../../golang.org" />
+      <root url="file://$PROJECT_DIR$/../../../go-github-token" />
+      <root url="file://$PROJECT_DIR$/../../../work-together-web" />
     </CLASSES>
     <SOURCES>
       <root url="file://$PROJECT_DIR$/../.." />
-      <root url="file://$PROJECT_DIR$/../../../kuaifa.com" />
-      <root url="file://$PROJECT_DIR$/../../../testaa" />
+      <root url="file://$PROJECT_DIR$/../../../go-vue-todos" />
       <root url="file://$PROJECT_DIR$/../../../github.com" />
+      <root url="file://$PROJECT_DIR$/../../../grbac" />
+      <root url="file://$PROJECT_DIR$/../../../beesql" />
+      <root url="file://$PROJECT_DIR$/../../../kuaifa.com" />
+      <root url="file://$PROJECT_DIR$/../../../.idea" />
+      <root url="file://$PROJECT_DIR$/../../../bee-go-vue" />
+      <root url="file://$PROJECT_DIR$/../../../goweb" />
+      <root url="file://$PROJECT_DIR$/../../../go-koans" />
+      <root url="file://$PROJECT_DIR$/../../../goTest" />
+      <root url="file://$PROJECT_DIR$/../../../sqlTest" />
+      <root url="file://$PROJECT_DIR$/../../../golang.org" />
+      <root url="file://$PROJECT_DIR$/../../../go-github-token" />
+      <root url="file://$PROJECT_DIR$/../../../work-together-web" />
     </SOURCES>
     <excluded>
       <root url="file://$PROJECT_DIR$" />

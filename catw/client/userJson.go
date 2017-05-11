@@ -19,3 +19,8 @@ type UserNotKeyJSON struct {
 	UpArticles string	`json:"up_articles,omitempty"`
 	CollectArticles	string	`json:"collect_articles,omitempty"`
 }
+
+type UserNewPWD struct {
+	InputNewPWD	string	`json:"input_new_pwd"`
+	InputAgainPWD	string	`json:"input_again_pwd"`
+}

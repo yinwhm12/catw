@@ -21,6 +21,9 @@ type User struct {
 	City	string	`json:"city,omitempty" orm:"column(city);size(45);null"`
 	Describe	string	`json:"describe,omitempty" orm:"column(describe);size(255);null"`
 	School	string	`json:"school,omitempty" orm:"column(school);size(255);null"`
+
+	//粉丝 被多少人点关注
+	Fan	int	`json:"fan,omitempty" orm:"column(fan);default(0)"`
 	
 	//文章收藏 存入文章id 格式如: ,1,2,3,4
 	CollectArticles string `json:"collect_articles,omitempty" orm:"column(collect_articles);size(255);null"`
@@ -84,7 +87,7 @@ func GetUserInfoById(id int)(u User, err error)  {
 func GetUserNotKeyInfoById(id int)(u User,err error)  {
 	o := orm.NewOrm()
 	err = o.QueryTable(new(User)).Filter("Id",id).One(&u,"Id","Name","Email","Motto","" +
-		"City","Describe","School","UpArticles","CollectArticles")
+		"City","Describe","School")
 	return
 }
 
@@ -254,6 +257,23 @@ func UpdateCollectArticles(uid int, collectArticleStr string)(err error)  {
 	return
 }
 
+//关注 更新
+func UpdateCollectUsers(uid int, collectUserStr string)(err error)  {
+	o := orm.NewOrm()
+	_, err = o.QueryTable(new(User)).Filter("Id",uid).
+		Update(orm.Params{"CollectUsers":collectUserStr})
+	return
+
+}
+
+//粉丝 数量 更新
+func UpdateUserFan(uid int, fanCount int)(err error)  {
+	o := orm.NewOrm()
+	_, err = o.QueryTable(new(User)).Filter("Id",uid).
+		Update(orm.Params{"Fan":fanCount})
+	return
+}
+
 // 获取收藏 总数 string
 func GetCollectArticles(id int)(collectArticles string,err error)  {
 	o := orm.NewOrm()
@@ -279,9 +299,15 @@ func GetCollectUsersById(id int)(collectUsers string, err error)  {
 }
 
 //获取批量的用户信息 为collectUsers服务 没有分页
-func GetAllCollectUsersByIds(ids []int)(users []*User,err error)  {
+func GetAllCollectUsersByIds(ids []int, limit, offset int)(users []*User,total int64, err error)  {
 	o := orm.NewOrm()
-	_,err = o.QueryTable(new(User)).Filter("Id__in",ids).All(&users,"Id","Name","Email","Motto","City","Describe","School")
+	qs := o.QueryTable(new(User))
+	qs = qs.Filter("Id__in",ids)
+	total, err = qs.Count()
+	if err != nil{
+		return
+	}
+	_, err = qs.Limit(limit).Offset(offset).All(&users,"Id","Name","Email","Motto","City","Describe","School")
+	//Filter("Id__in",ids).All(&users,"Id","Name","Email","Motto","City","Describe","School")
 	return
-
 }

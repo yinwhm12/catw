@@ -174,7 +174,7 @@ func GetIndexAllByPage(ids []int,limit, offset int)(articles []Article,total int
 func GetArticlesPageByIds(ids []int,limit,offset int)(articles []*Article, total int64, err error)  {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(Article))
-	qs = qs.Filter("Tid__in",ids)
+	qs = qs.Filter("Tid__in",ids).OrderBy("CreatedTime")
 	total, err = qs.Count()
 	if err != nil{
 		return
@@ -184,6 +184,18 @@ func GetArticlesPageByIds(ids []int,limit,offset int)(articles []*Article, total
 
 }
 
+//获取用户自己的文章 分页
+func GetMyArticlesById(id, limit, offset int)(articles []*Article,total int64, err error) {
+	o := orm.NewOrm()
+	qs := o.QueryTable(new(Article)).OrderBy("CreatedTime")
+	qs = qs.Filter("User", id)
+	total, err = qs.Count()
+	if err != nil {
+		return
+	}
+	_, err = qs.Limit(limit).Offset(offset).All(&articles)
+	return
+}
 
 //test 
 func GetPages(root1 int)(articles []Article, err error)  {

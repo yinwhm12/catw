@@ -9,6 +9,7 @@ import (
 	"yinwhm.com/yin/catw/utils"
 	"sync"
 	"yinwhm.com/yin/catw/tool"
+	"strconv"
 )
 
 type MessageController struct {
@@ -28,26 +29,35 @@ func (c *MessageController)PostOne()  {
 		return
 	}else{
 		//接收者信息 楼主
-		to_user, err := models.GetUserById(messageJSON.ToUserID)
-		if err != nil{
-			c.RespJSON(bean.CODE_Forbidden, err.Error())
-			return
-		}
+		//to_user, err := models.GetUserById(messageJSON.ToUserID)
+		//if err != nil{
+		//	c.RespJSON(bean.CODE_Forbidden, err.Error())
+		//	return
+		//}
 		//发送者信息
 		from_user, err := models.GetUserById(c.Uid())
 		if err != nil{
 			c.RespJSON(bean.CODE_Forbidden, err.Error())
 			return
 		}
+		//通过文章id 获取作者id
 		article, err := models.GetArticleById(messageJSON.ArticleId)
 		if err != nil{
 			c.RespJSON(bean.CODE_Forbidden, err.Error())
 			return
 		}
+		to_user, err := models.GetUserById(article.User.Id)
+		if err != nil{
+			c.RespJSON(bean.CODE_Forbidden, err.Error())
+			return
+		}
+		//消息内容
+		content := from_user.Email+ "对你的<<"+article.Title+">>文章进行评论!"
 		message := models.Message{
 			ToUser:to_user,
 			FromUser:from_user,
 			Article:article,
+			Content:content,
 		}
 		//保存这条信息
 		err = models.AddOneMessage(&message)
@@ -55,6 +65,7 @@ func (c *MessageController)PostOne()  {
 			c.RespJSON(bean.CODE_Forbidden, err.Error())
 			return
 		}
+		c.RespJSON(bean.CODE_Success,"操作成功!")
 
 	}
 
@@ -125,14 +136,10 @@ func (c *MessageController)PostMany()  {
 	}
 }
 
-// @Description 分页界面 同一入口 参入page=0未读 page=1已读 page=3全部
+// @Description 分页界面 同一入口 参入page=1未读 page=2已读 page=3全部
 // @router / [get]
 func (c *MessageController)GetAll()  {
-	page, err := c.GetInt("page")
-	if err != nil{
-		c.RespJSON(bean.CODE_Forbidden, err.Error())
-		return
-	}
+	page := c.GetString("page")
 	limit, err := c.GetInt("limit")
 	if err != nil{
 		c.RespJSON(bean.CODE_Forbidden, err.Error())
@@ -150,11 +157,11 @@ func (c *MessageController)GetAll()  {
 	}
 	var total int64
 	var messages []*models.Message
-	if page == 0{//未读页面
+	if page == "1"{//未读页面
 		messages, total, err = models.GetMessageUnreadPageByToUser(user,limit, offset)
-	}else if page == 1{//已读页面
+	}else if page == "2"{//已读页面
 		messages, total, err = models.GetMessageReadPageByToUser(user, limit, offset)
-	}else if page == 3{//全部页面
+	}else if page == "3"{//全部页面
 		messages, total, err = models.GetAllMessagesByToUser(user, limit, offset)
 	}else{//page 参数有误
 		c.RespJSON(bean.CODE_Forbidden, err.Error())
@@ -164,6 +171,30 @@ func (c *MessageController)GetAll()  {
 		c.RespJSON(bean.CODE_Forbidden, err.Error())
 		return
 	}else {
+		//获取发送者信息
+		length := len(messages)
+		if length <=0{
+			total = 0
+		}else{
+
+			Dlinks := make([]int, length)
+			for _, s := range messages{
+				Dlinks = append(Dlinks,s.FromUser.Id)
+			}
+			sort.Ints(Dlinks)
+			links := utils.Duplicate(Dlinks)
+			//获取作者
+			userMap, err := models.GetUsersByIds(links)
+			if err != nil{
+				c.RespJSON(bean.CODE_Params_Err, err.Error())
+				return
+			}
+			for i, s := range messages{
+				if u, ok := userMap[s.FromUser.Id]; ok{
+					messages[i].FromUser = &u
+				}
+			}
+		}
 		c.RespJSONDataWithTotal(messages, total)
 	}
 }
@@ -182,4 +213,23 @@ func (c *MessageController)GetNews()  {
 		return
 	}
 	c.RespJSONData(total)
+}
+
+// @Description 删除某条具体的信息
+// @router /:id [delete]
+func (c *MessageController)Delete()  {
+	idStr := c.Ctx.Input.Param(":id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil{
+		c.RespJSON(bean.CODE_Bad_Request, err.Error())
+		return
+	}
+	err = models.DeletOneMessageById(id)
+	if err != nil{
+		c.RespJSON(bean.CODE_Bad_Request, err.Error())
+		return
+	}else {
+		c.RespJSONData("成功删除!")
+		return
+	}
 }

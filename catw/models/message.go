@@ -10,10 +10,12 @@ type Message struct {
 	State	int	`json:"state,omitempty" orm:"column(state);default(0)"`
 	Type	int	`json:"type,omitempty" orm:"column(type);default(0)"`
 	CreatedTime	int	`json:"created_time,omitempty" orm:"column(created_time);"`
+	Content	string	`json:"content,omitempty" orm:"column(content);size(255);null"`
 
 	FromUser	*User	`json:"from_user,omitempty" orm:"rel(fk)"`
 	ToUser	*User	`json:"to_user,omitempty" orm:"rel(fk)"`
 	Article	*Article	`json:"article,omitempty" orm:"rel(fk)"`
+
 
 	//state 默认0 表示未读信息 1表示已读信息
 	//from_user 表示发送者	to_user表示接收者
