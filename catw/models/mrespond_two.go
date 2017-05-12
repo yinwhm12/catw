@@ -87,6 +87,7 @@ func GetAllUserIdsByRespondOne(id int)(ids []int, err error)  {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(RespondTwo))
 	_, err = qs.Filter("RespondOne",id).All(&respondTwos)
+	ids = make([]int,len(respondTwos))
 	if err ==nil{
 		for i, s := range respondTwos{
 			ids[i] = s.User.Id

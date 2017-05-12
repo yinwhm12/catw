@@ -52,6 +52,15 @@ func AddOneByReadById(id int)(err error)  {
 	return nil
 
 }
+
+//评论数量增加一
+func AddOneCommentById(id,commentCount int)(err error)  {
+	o := orm.NewOrm()
+	_, err = o.QueryTable(new(ValueArticle)).Filter("ValueArticleId",id).
+		Update(orm.Params{"CommentCount":commentCount})
+	return
+}
+
 //获取文章 价值信息
 func GetOneValueById(v *ValueArticle)(err error)  {
 	o := orm.NewOrm()

@@ -84,6 +84,13 @@ func (c *MessageController)PostMany()  {
 			c.RespJSON(bean.CODE_Forbidden, err.Error())
 			return
 		}
+
+		//获取作者
+		auther, err := models.GetUserById(article.User.Id)
+		if err != nil{
+			c.RespJSON(bean.CODE_Forbidden,err.Error())
+			return
+		}
 		from_user, err := models.GetUserById(c.Uid())//顶者
 		if err != nil{
 			c.RespJSON(bean.CODE_Forbidden, err.Error())
@@ -99,10 +106,17 @@ func (c *MessageController)PostMany()  {
 		links := utils.Duplicate(userIds)//过滤重复的userid
 
 
+		content := from_user.Email+"顶起你的评论,于<<"+article.Title+">>"
 		message := models.Message{
 			Article:article,
 			FromUser:from_user,
+			Content:content,
 		}
+
+		//向作者发送信息
+		message.ToUser = auther
+		go models.AddOneMessage(&message)
+
 		var wg sync.WaitGroup
 
 
@@ -113,7 +127,13 @@ func (c *MessageController)PostMany()  {
 			switch v := links[i].(type) {
 				case int:
 					id = v
+					if id == c.Uid() || id == article.User.Id{//除去自己 除去作者
+						wg.Done()
+						continue
+					}
+					break
 				default:
+					wg.Done()
 					continue
 			}
 			go tool.DealAddManyMessage(id,message,&wg)
@@ -131,6 +151,8 @@ func (c *MessageController)PostMany()  {
 
 		}
 		wg.Wait()
+
+		c.RespJSON(bean.CODE_Success,"操作成功!")
 
 
 	}
@@ -230,6 +252,25 @@ func (c *MessageController)Delete()  {
 		return
 	}else {
 		c.RespJSONData("成功删除!")
+		return
+	}
+}
+
+// @Description 标记已读信息
+// @router /hadReadMessage/:id [put]
+func (c *MessageController)HadReadMessage()  {
+	idStr := c.Ctx.Input.Param(":id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil{
+		c.RespJSON(bean.CODE_Bad_Request, err.Error())
+		return
+	}
+	err = models.ChangeMessageStateById(id,1)//将状态改为已读
+	if err != nil{
+		c.RespJSON(bean.CODE_Forbidden, err.Error())
+		return
+	}else {
+		c.RespJSON(bean.CODE_Success,"操作成功")
 		return
 	}
 }

@@ -134,3 +134,11 @@ func DeletOneMessageById(id int)(err error)  {
 	return
 
 }
+
+// 改变某条信息的状态
+func ChangeMessageStateById(id,state int)(err error)  {
+	o := orm.NewOrm()
+	_, err = o.QueryTable(new(Message)).Filter("MessageId",id).
+		Update(orm.Params{"State":state})
+	return
+}
