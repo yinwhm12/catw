@@ -56,6 +56,10 @@ func init() {
 			beego.NSInclude(&controllers.MessageController{},
 			),
 		),
+		beego.NSNamespace("/search",
+			beego.NSInclude(&controllers.SearchController{},
+			),
+		),
 
 
 

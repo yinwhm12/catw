@@ -174,6 +174,27 @@ func init() {
 			AllowHTTPMethods: []string{"get"},
 			Params: nil})
 
+	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:SearchController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:SearchController"],
+		beego.ControllerComments{
+			Method: "SearchName",
+			Router: `/searchName`,
+			AllowHTTPMethods: []string{"get"},
+			Params: nil})
+
+	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:SearchController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:SearchController"],
+		beego.ControllerComments{
+			Method: "SearchTitle",
+			Router: `/searchTitle`,
+			AllowHTTPMethods: []string{"get"},
+			Params: nil})
+
+	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:SearchController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:SearchController"],
+		beego.ControllerComments{
+			Method: "SearchContent",
+			Router: `/searchContent`,
+			AllowHTTPMethods: []string{"get"},
+			Params: nil})
+
 	beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:SessionController"] = append(beego.GlobalControllerRouter["yinwhm.com/yin/catw/controllers:SessionController"],
 		beego.ControllerComments{
 			Method: "Post",

@@ -213,9 +213,52 @@ func GetPages(root1 int)(articles []Article, err error)  {
 }
 
 
+//搜索栏
 
+//搜索作者
+func SearchAuthers(keyString string,limit, offset int)(articles []Article, total int64, err error)  {
+	o := orm.NewOrm()
+	cond := orm.NewCondition()
+	cond1 := cond.Or("User__Email__icontains",keyString).Or("User__Name__icontains",keyString)
+	qs := o.QueryTable(new(Article))
+	total,err = qs.SetCond(cond1).Count()
+	if err != nil{
+		return
+	}
+	_,err = qs.Limit(limit).Offset(offset).All(&articles)
+	//total, err = o.Raw("SELECT * FROM article a INNER JOIN user u" +
+	//	" ON a.user_id = u.id WHERE u.email LIKE '%?%' OR u.name LIKE '%?%'",
+	//	keyString,keyString).QueryRows(&articles)
+	return
+}
 
+//搜索 标题
+func SearchTitle(keyString string,limit, offset int)(articles []Article, total int64, err error)  {
+	o := orm.NewOrm()
+	qs := o.QueryTable(new(Article))
+	qs = qs.Filter("Title__icontains",keyString)
+	total, err  = qs.Count()
+	if err != nil{
+		return
+	}
+	_,err = qs.Limit(limit).Offset(offset).All(&articles)
+	return
+}
 
+//搜索内容 全文
+func SearchAllContent()(articles []Article, err error)  {
+	o := orm.NewOrm()
+	qs := o.QueryTable(new(Article))
+	_, err = qs.All(&articles)
+	return
+}
 
+// 搜索内容 分页
+func SearchAllContentPageByIds(ids []interface{},limit, offset int)(articles []Article, err error)  {
+	o := orm.NewOrm()
+	qs := o.QueryTable(new(Article))
+	_, err = qs.Filter("ArticleId__in",ids).Limit(limit).Offset(offset).All(&articles)
+	return
 
+}
 

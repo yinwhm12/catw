@@ -9,7 +9,7 @@ package main
 //	"github.com/astaxie/beego"
 //	"yinwhm.com/yin/catw/models"
 //)
-//
+
 //func init()  {
 //	link := fmt.Sprintf("%s:%s@(%s:%s)/%s", beego.AppConfig.String("mysqluser"),
 //		beego.AppConfig.String("mysqlpass"), beego.AppConfig.String("mysqlurls"),
@@ -238,3 +238,4 @@ package main
 //		fmt.Println(i)
 //	}
 //}
+
