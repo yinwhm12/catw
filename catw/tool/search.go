@@ -11,14 +11,25 @@ var (
 	docId    uint64
 )
 
-func Search(articles []models.Article,keyString string)(ids []interface{})  {
+func init()  {
 	searcher.Init(types.EngineInitOptions{
 		IndexerInitOptions: &types.IndexerInitOptions{
 			IndexType: types.DocIdsIndex,
 		},
-		SegmenterDictionaries: "../github.com/huichen/wukong/data/dictionary.txt",
-		StopTokenFile:         "../github.com/huichen/wukong/data/stop_tokens.txt",
+		SegmenterDictionaries: "../../../github.com/huichen/wukong/data/dictionary.txt",
+		StopTokenFile:         "../../../github.com/huichen/wukong/data/stop_tokens.txt",
 	})
+	//defer searcher.Close()
+}
+
+func Search(articles []models.Article,keyString string)(ids []interface{})  {
+	//searcher.Init(types.EngineInitOptions{
+	//	IndexerInitOptions: &types.IndexerInitOptions{
+	//		IndexType: types.DocIdsIndex,
+	//	},
+	//	SegmenterDictionaries: "../../../github.com/huichen/wukong/data/dictionary.txt",
+	//	StopTokenFile:         "../../../github.com/huichen/wukong/data/stop_tokens.txt",
+	//})
 	defer searcher.Close()
 	//length := len(articles)
 	for _, s := range articles{

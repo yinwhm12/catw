@@ -43,6 +43,13 @@ func init()  {
 	orm.RegisterModel(new(User))
 }
 
+//定义索引
+func (u *User)TableIndex() [][]string  {
+	return [][]string{
+		[]string{"Name","Email"},
+	}
+}
+
 func AddUser(u *User)(id int64,err error)  {
 	u.CreatedTime = int(time.Now().Unix())
 	o := orm.NewOrm()
@@ -308,6 +315,6 @@ func GetAllCollectUsersByIds(ids []int, limit, offset int)(users []*User,total i
 		return
 	}
 	_, err = qs.Limit(limit).Offset(offset).All(&users,"Id","Name","Email","Motto","City","Describe","School")
-	//Filter("Id__in",ids).All(&users,"Id","Name","Email","Motto","City","Describe","School")
+		//Filter("Id__in",ids).All(&users,"Id","Name","Email","Motto","City","Describe","School")
 	return
 }

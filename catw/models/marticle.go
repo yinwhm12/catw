@@ -8,7 +8,7 @@ import (
 
 type Article struct {
 	Tid int `json:"tid,omitempty" orm:"pk;column(tid);auto"`
-	Title string `json:"title,omitempty" orm:"column(title);size(50)"`
+	Title string `json:"title,omitempty" orm:"column(title);size(50);index"`
 	CreatedTime int `json:"created_time,omitempty" orm:"column(created_time);"`
 	TextContent string `json:"text_content,omitempty" orm:"column(text_content);null"`
 	ImgContent string `json:"img_content,omitempty" orm:"column(img_content)"`
@@ -221,7 +221,9 @@ func SearchAuthers(keyString string,limit, offset int)(articles []Article, total
 	cond := orm.NewCondition()
 	cond1 := cond.Or("User__Email__icontains",keyString).Or("User__Name__icontains",keyString)
 	qs := o.QueryTable(new(Article))
-	total,err = qs.SetCond(cond1).Count()
+
+	qs = qs.SetCond(cond1)
+	total, err = qs.Count()
 	if err != nil{
 		return
 	}
@@ -257,7 +259,7 @@ func SearchAllContent()(articles []Article, err error)  {
 func SearchAllContentPageByIds(ids []interface{},limit, offset int)(articles []Article, err error)  {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(Article))
-	_, err = qs.Filter("ArticleId__in",ids).Limit(limit).Offset(offset).All(&articles)
+	_, err = qs.Filter("Tid__in",ids).Limit(limit).Offset(offset).All(&articles)
 	return
 
 }
