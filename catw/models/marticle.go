@@ -187,7 +187,7 @@ func GetArticlesPageByIds(ids []int,limit,offset int)(articles []*Article, total
 //获取用户自己的文章 分页
 func GetMyArticlesById(id, limit, offset int)(articles []*Article,total int64, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(Article)).OrderBy("CreatedTime")
+	qs := o.QueryTable(new(Article)).OrderBy("-CreatedTime")
 	qs = qs.Filter("User", id)
 	total, err = qs.Count()
 	if err != nil {

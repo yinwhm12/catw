@@ -198,14 +198,14 @@ func (c *SearchController)SearchContent()  {
 			return
 		}
 
-		for i, s := range articles{
+		for i, s := range resultArticles{
 			//用户 赋值
 			if u, ok  := userMap[s.User.Id]; ok{
-				articles[i].User = &u
+				resultArticles[i].User = &u
 			}
 			//价值 赋值
 			if v, ok := valueMap[s.ValueArticle.ValueArticleId]; ok{
-				articles[i].ValueArticle = &v
+				resultArticles[i].ValueArticle = &v
 			}
 		}
 	}
